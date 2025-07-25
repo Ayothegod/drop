@@ -1,3 +1,3 @@
 
 
-# Client for trivia-clash app
+# Client for Droplane app

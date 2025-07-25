@@ -4,7 +4,6 @@ import { errorHandler } from "./core/middlewares/error.middleware.js";
 import { asyncHandler } from "./core/middlewares/asyncHandler.js";
 import { ApiResponse } from "./core/middlewares/ApiResponse.js";
 import authRoutes from "./modules/auth/auth.routes.js";
-import bookRoutes  from "./modules/book/book.routes.js";
 import cors from "cors";
 import job from "./core/config/cron.js";
 
@@ -33,7 +32,6 @@ app.get(
 );
 
 app.use("/api/v1/auth", authRoutes);
-app.use("/api/v1/books", bookRoutes);
 
 app.use(errorHandler as any);
 

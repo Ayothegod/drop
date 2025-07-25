@@ -1,7 +1,7 @@
 {
-  "name": "modular-monolith-fullstack",
+  "name": "droplane",
   "version": "1.0.0",
-  "description": "Client server modular monolith base setup",
+  "description": "",
   "main": "index.js",
   "private": true,
   "scripts": {

@@ -73,10 +73,10 @@
   }
 
   .box {
-    @apply border p-4 rounded-md bg-secondary;
+    @apply border p-4 rounded bg-secondary;
   }
 
-  .contain {
+  .page {
     @apply max-w-7xl mx-auto px-4;
   }
 }

@@ -1,4 +1,4 @@
 packages:
-  - mobile
+  - client
   - server
-nodeLinker: hoisted
+# nodeLinker: hoisted
