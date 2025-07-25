@@ -10,6 +10,7 @@ const envSchema = z.object({
   DATABASE_URL: z.string().url(),
   SESSION_SECRET: z.string().min(1, "Session secret is required"),
   RESEND_API_KEY: z.string().min(1, "Resend API key is required"),
+  RESEND_EMAIL_FROM: z.string().email("Invalid email format for Resend"),
   // JWT_ACCESS_SECRET: z.string().min(12),
   // JWT_REFRESH_SECRET: z.string().min(12),
   // CLOUDINARY_NAME: z.string(),

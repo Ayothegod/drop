@@ -19,7 +19,6 @@ class AuthController {
   }
 
   static async register(req: Request, res: Response) {
-    console.log("User details:", req.body);
     const { email, password, fullname } = req.body;
 
     const { user } = await AuthService.register(
@@ -30,7 +29,7 @@ class AuthController {
 
     res
       .status(201)
-      .json(new ApiResponse(201, { user, token }, "User created successfully"));
+      .json(new ApiResponse(201, { user }, "User created successfully"));
   }
 
   // static async getProfile(req: Request, res: Response) {

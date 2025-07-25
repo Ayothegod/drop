@@ -1,3 +1,5 @@
+import { resend } from "../../core/config/resend.js";
+import serverEnv from "../../core/config/serverEnv.js";
 import { prisma } from "../../core/database/prisma.js";
 import { ApiError } from "../../core/errors/ApiError.js";
 import {
@@ -29,9 +31,31 @@ class AuthService {
         password: hashedPassword,
         image,
       },
+      select: {
+        fullname: true,
+        email: true,
+        image: true,
+      },
     });
 
+    if (!user) {
+      throw new ApiError(409, "Unable to create user");
+    }
+
     // TODO: send verify account email
+    const { data, error } = await resend.emails.send({
+      from: serverEnv.RESEND_EMAIL_FROM,
+      to: [`heyayomideadebisi@gmail.com`],
+      subject: "Welcome to Droplane",
+      html: "<strong>But first, you need to verify your account!</strong>",
+    });
+
+    console.log(data, error);
+
+    // if (error) {
+    //   // TODO: return error response
+    //   throw new ApiError(500, "Failed to send verification email");
+    // }
 
     return { user };
   }
@@ -64,7 +88,7 @@ class AuthService {
     //   where: { sid: req.session.id },
     //   data: { userId: user.id },
     // });
-    const user  = "Hello"
+    const user = "Hello";
 
     return { user };
   }

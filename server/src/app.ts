@@ -21,24 +21,27 @@ app.use(
   })
 );
 
-app.use(session({
-  secret: serverEnv.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: false,
-  cookie: { secure: false },
-    store: new PrismaSessionStore(
-    prisma,
-    {
+app.use(
+  session({
+    secret: serverEnv.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: false,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      httpOnly: false,
+    },
+    store: new PrismaSessionStore(prisma, {
       checkPeriod: 2 * 60 * 1000,
       dbRecordIdIsSessionId: true,
       dbRecordIdFunction: undefined,
-    }
-  ),
-}));
+    }),
+  })
+);
 
 // TODO: job.start()
 app.use(cookieParser());
-app.use(express.json({ limit: '5mb' }));
+app.use(express.json({ limit: "5mb" }));
 // { limit: "16kb" }
 
 app.get(
