@@ -1,15 +1,14 @@
-import express, { Request, Response } from "express";
-import cookieParser from "cookie-parser";
-import { errorHandler } from "./core/middlewares/error.middleware.js";
-import { asyncHandler } from "./core/middlewares/asyncHandler.js";
-import { ApiResponse } from "./core/middlewares/ApiResponse.js";
-import authRoutes from "./modules/auth/auth.routes.js";
-import cors from "cors";
-import session from "express-session";
 import { PrismaSessionStore } from "@quixo3/prisma-session-store";
+import cookieParser from "cookie-parser";
+import cors from "cors";
+import express, { Request, Response } from "express";
+import session from "express-session";
 import serverEnv from "./core/config/serverEnv.js";
-import { PrismaClient } from "@prisma/client";
 import { prisma } from "./core/database/prisma.js";
+import { ApiResponse } from "./core/middlewares/ApiResponse.js";
+import { asyncHandler } from "./core/middlewares/asyncHandler.js";
+import { errorHandler } from "./core/middlewares/error.middleware.js";
+import authRoutes from "./modules/auth/auth.routes.js";
 
 const app = express();
 
@@ -47,6 +46,7 @@ app.use(express.json({ limit: "5mb" }));
 app.get(
   "/api/v1/test",
   asyncHandler(async (req: Request, res: Response) => {
+
     return res
       .status(200)
       .json(new ApiResponse(200, "OK", "/ route working successfully"));

@@ -1,4 +1,4 @@
-import { resend, sendEmail } from "../../core/config/sendgrid.js";
+import { transporter } from "../../core/config/nodemailer.js";
 import serverEnv from "../../core/config/serverEnv.js";
 import { prisma } from "../../core/database/prisma.js";
 import { ApiError } from "../../core/errors/ApiError.js";
@@ -43,34 +43,16 @@ class AuthService {
     }
 
     // TODO: send verify account email
-    const msg = {
-      to: `${email}`,
-      from: serverEnv.SENDGRID_EMAIL_FROM,
+    console.log(transporter);
+
+    const emailResponse = await transporter.sendMail({
+      from: '"Droplane - Your digital marketplace" <heyayomideadebisi@gmail.com>',
+      to: `ayodasilva12@gmail.com`,
       subject: "Welcome to Droplane",
       text: "sendgrids data easy to do anywhere, even with Node.js",
       html: "<strong>But first, you need to verify your account!</strong>",
-    };
-
-    const res = await sendEmail({
-      ...msg,
     });
-
-    console.log("Sent email response: ",res);
-    
-
-    // sgMail
-    //   .send(msg)
-    //   .then(() => {
-    //     console.log("Email sent");
-    //   })
-    //   .catch((error) => {
-    //     console.error(error);
-    //   });
-
-    // if (error) {
-    //   // TODO: return error response
-    //   throw new ApiError(500, "Failed to send verification email");
-    // }
+    console.log(emailResponse);
 
     return { user };
   }

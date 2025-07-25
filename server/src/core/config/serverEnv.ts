@@ -11,6 +11,7 @@ const envSchema = z.object({
   SESSION_SECRET: z.string().min(1, "Session secret is required"),
   SENDGRID_API_KEY: z.string().min(1, "Sendgrid API key is required"),
   SENDGRID_EMAIL_FROM: z.string().email("Invalid email format for Resend"),
+  GOOGLE_APP_PASSWORD: z.string().min(1, "Google app password is required"),
   // JWT_ACCESS_SECRET: z.string().min(12),
   // JWT_REFRESH_SECRET: z.string().min(12),
   // CLOUDINARY_NAME: z.string(),
