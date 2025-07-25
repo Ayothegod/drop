@@ -1,12 +1,12 @@
 import { transporter } from "../../core/config/nodemailer.js";
-import serverEnv from "../../core/config/serverEnv.js";
 import { prisma } from "../../core/database/prisma.js";
+import { renderWelcomeEmail } from "../../core/emails/WelcomeEmail.js";
 import { ApiError } from "../../core/errors/ApiError.js";
 import {
-  comparePassword,
-  generateAccessToken,
-  hashPassword,
+  hashPassword
 } from "../../shared/utils/services.js";
+
+
 
 class AuthService {
   static async register(email: string, password: string, fullname: string) {
@@ -38,21 +38,22 @@ class AuthService {
         image: true,
       },
     });
-
+    
     if (!user) {
       throw new ApiError(409, "Unable to create user");
     }
-
+    
     // send verify account email
     let emailSent = false;
-
+    
     try {
+      const html = await renderWelcomeEmail();
+
       await transporter.sendMail({
         from: '"Droplane - Your digital marketplace" <heyayomideadebisi@gmail.com>',
         to: "ayodasilva12@gmail.com",
         subject: "Welcome to Droplane",
-        text: "sendgrids data easy to do anywhere, even with Node.js",
-        html: "<strong>But first, you need to verify your account!</strong>",
+        html: html
       });
 
       emailSent = true;
