@@ -16,6 +16,6 @@ const envSchema = z.object({
   API_URL: z.string()
 });
 
-const parsedEnv = envSchema.parse(process.env);
+const serverEnv = envSchema.parse(process.env);
 
-export default parsedEnv;
+export default serverEnv;

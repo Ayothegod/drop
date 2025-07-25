@@ -4,7 +4,7 @@ import { createServer } from "http";
 
 import logger from "./core/logger/winston.logger.js";
 import morganMiddleware from "./core/logger/morgan.logger.js";
-import env from "./core/config/env.js";
+import env from "./core/config/serverEnv.js";
 
 const httpServer = createServer(app);
 

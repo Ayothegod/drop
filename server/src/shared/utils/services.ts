@@ -2,19 +2,17 @@ import jwt from "jsonwebtoken";
 import argon2 from "argon2";
 import { ApiError } from "../../core/errors/ApiError.js";
 import { User } from "@prisma/client";
-import parsedEnv from "../../core/config/env.js";
+import serverEnv from "../../core/config/serverEnv.js";
 import { Decoded } from "../types/lib.js";
 
-const JWT_ACCESS_SECRET = parsedEnv.JWT_ACCESS_SECRET
-const JWT_REFRESH_SECRET = parsedEnv.JWT_REFRESH_SECRET
+const JWT_ACCESS_SECRET = serverEnv.JWT_ACCESS_SECRET;
+const JWT_REFRESH_SECRET = serverEnv.JWT_REFRESH_SECRET;
 
 // Generate access token
 export const generateAccessToken = (user: User) => {
-  return jwt.sign(
-    { id: user?.id, email: user?.email },
-    JWT_ACCESS_SECRET,
-    { expiresIn: "7d" }
-  );
+  return jwt.sign({ id: user?.id, email: user?.email }, JWT_ACCESS_SECRET, {
+    expiresIn: "7d",
+  });
 };
 
 // Generate refresh token
@@ -25,7 +23,7 @@ export const generateRefreshToken = (user: any) => {
 // Verify access token
 export const verifyAccessToken = (token: string) => {
   try {
-    return jwt.verify(token, JWT_ACCESS_SECRET) as Decoded
+    return jwt.verify(token, JWT_ACCESS_SECRET) as Decoded;
   } catch (error) {
     throw new ApiError(400, "Unable to verify access token.");
   }
@@ -50,7 +48,10 @@ export const hashPassword = async (password: string) => {
 };
 
 // Compare password using Argon2
-export const comparePassword = async (password: string, hashedPassword: string) => {
+export const comparePassword = async (
+  password: string,
+  hashedPassword: string
+) => {
   try {
     return await argon2.verify(hashedPassword, password);
   } catch (err) {

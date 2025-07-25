@@ -1,10 +1,10 @@
-import { v2 as cloudinary } from "cloudinary";
-import parsedEnv from "./env.js";
+// import { v2 as cloudinary } from "cloudinary";
+// import serverEnv from "./serverEnv.js";
 
-cloudinary.config({
-  cloud_name: parsedEnv.CLOUDINARY_NAME,
-  api_key: parsedEnv.CLOUDINARY_APIKEY,
-  api_secret: parsedEnv.CLOUDINARY_APISECRET,
-});
+// cloudinary.config({
+//   cloud_name: serverEnv.CLOUDINARY_NAME,
+//   api_key: serverEnv.CLOUDINARY_APIKEY,
+//   api_secret: serverEnv.CLOUDINARY_APISECRET,
+// });
 
-export default cloudinary;
+// export default cloudinary;

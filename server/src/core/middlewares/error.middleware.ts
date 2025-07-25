@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { ApiError } from "../errors/ApiError.js";
 import logger from "../logger/winston.logger.js";
-import parsedEnv from "../config/env.js";
+import serverEnv from "../config/serverEnv.js";
 
 const errorHandler = (
   err: any,
@@ -21,7 +21,7 @@ const errorHandler = (
   const response = {
     ...error,
     message: error.message,
-    ...(parsedEnv.NODE_ENV === "development" ? { stack: error.stack } : {}),
+    ...(serverEnv.NODE_ENV === "development" ? { stack: error.stack } : {}),
   };
 
   logger.error(`${error.message}`);

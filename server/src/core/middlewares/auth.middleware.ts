@@ -14,6 +14,17 @@ export const verifyToken = asyncHandler(
 
     const token = authHeader.split(" ")[1];
 
+    // if (!req.cookies) {
+    //   throw new ApiError(401, "Unauthorized: No token provided.");
+    // }
+
+    // if (!req.cookies["better-auth.session_token"]) {
+    //   throw new ApiError(401, "No authentication token, access denied.");
+    // }
+
+    // const betterAuthCookie: string = req.cookies["better-auth.session_token"];
+    // const token = betterAuthCookie.split(".")[0];
+
     if (!token) {
       throw new ApiError(401, "No authentication token, access denied.");
     }
