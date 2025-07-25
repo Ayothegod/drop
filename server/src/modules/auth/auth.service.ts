@@ -1,4 +1,4 @@
-import { resend } from "../../core/config/resend.js";
+import { resend, sendEmail } from "../../core/config/sendgrid.js";
 import serverEnv from "../../core/config/serverEnv.js";
 import { prisma } from "../../core/database/prisma.js";
 import { ApiError } from "../../core/errors/ApiError.js";
@@ -43,14 +43,29 @@ class AuthService {
     }
 
     // TODO: send verify account email
-    const { data, error } = await resend.emails.send({
-      from: serverEnv.RESEND_EMAIL_FROM,
-      to: [`heyayomideadebisi@gmail.com`],
+    const msg = {
+      to: `${email}`,
+      from: serverEnv.SENDGRID_EMAIL_FROM,
       subject: "Welcome to Droplane",
+      text: "sendgrids data easy to do anywhere, even with Node.js",
       html: "<strong>But first, you need to verify your account!</strong>",
+    };
+
+    const res = await sendEmail({
+      ...msg,
     });
 
-    console.log(data, error);
+    console.log("Sent email response: ",res);
+    
+
+    // sgMail
+    //   .send(msg)
+    //   .then(() => {
+    //     console.log("Email sent");
+    //   })
+    //   .catch((error) => {
+    //     console.error(error);
+    //   });
 
     // if (error) {
     //   // TODO: return error response
