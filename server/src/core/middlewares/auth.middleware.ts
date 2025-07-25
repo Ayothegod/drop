@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { ApiError } from "../errors/ApiError.js";
 import { asyncHandler } from "./asyncHandler.js";
-import { verifyAccessToken } from "../../shared/utils/services.js";
 import { prisma } from "../database/prisma.js";
 
 export const verifyToken = asyncHandler(
@@ -15,23 +14,15 @@ export const verifyToken = asyncHandler(
       throw new ApiError(401, "No authentication token, access denied.");
     }
 
-    // const betterAuthCookie: string = req.cookies["better-auth.session_token"];
-    // const token = betterAuthCookie.split(".")[0];
-
-    // if (!token) {
-    //   throw new ApiError(401, "No authentication token, access denied.");
-    // }
-
     try {
-      const decoded = verifyAccessToken(token);
+      const decoded = req.session.userId
 
-      // get user details with token id
+      // get user details with session.userId
       const user = await prisma.user.findUnique({
-        where: { id: decoded.id },
+        where: { id: decoded },
         select: {
           email: true,
-          username: true,
-          id: true,
+          name: true,
         },
       });
 
