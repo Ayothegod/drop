@@ -5,19 +5,27 @@ import { asyncHandler } from "./core/middlewares/asyncHandler.js";
 import { ApiResponse } from "./core/middlewares/ApiResponse.js";
 import authRoutes from "./modules/auth/auth.routes.js";
 import cors from "cors";
-import job from "./core/config/cron.js";
-
+import session from "express-session";
+import { PrismaSessionStore } from "@quixo3/prisma-session-store";
+import serverEnv from "./core/config/serverEnv.js";
 const app = express();
 
 app.use(
   cors({
-    origin: "http://localhost:8081",
+    origin: "http://localhost:5173",
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
 );
 
-// job.start()
+app.use(session({
+  secret: serverEnv.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: false }
+}));
+
+// TODO: job.start()
 app.use(cookieParser());
 app.use(express.json({ limit: '5mb' }));
 // { limit: "16kb" }
