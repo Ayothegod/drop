@@ -1,5 +1,6 @@
 import { transporter } from "../../core/config/nodemailer.js";
 import { prisma } from "../../core/database/prisma.js";
+import { renderVerifyAccount } from "../../core/emails/VerifyAccount.js";
 import { renderWelcomeEmail } from "../../core/emails/WelcomeEmail.js";
 import { ApiError } from "../../core/errors/ApiError.js";
 import {
@@ -47,7 +48,7 @@ class AuthService {
     let emailSent = false;
     
     try {
-      const html = await renderWelcomeEmail();
+      const html = await renderVerifyAccount();
 
       await transporter.sendMail({
         from: '"Droplane - Your digital marketplace" <heyayomideadebisi@gmail.com>',
