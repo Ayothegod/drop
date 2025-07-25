@@ -6,28 +6,21 @@ import { prisma } from "../database/prisma.js";
 
 export const verifyToken = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const authHeader = req.headers.authorization;
 
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    if (!req.cookies) {
       throw new ApiError(401, "Unauthorized: No token provided.");
     }
 
-    const token = authHeader.split(" ")[1];
-
-    // if (!req.cookies) {
-    //   throw new ApiError(401, "Unauthorized: No token provided.");
-    // }
-
-    // if (!req.cookies["better-auth.session_token"]) {
-    //   throw new ApiError(401, "No authentication token, access denied.");
-    // }
+    if (!req.cookies["connect.sid"]) {
+      throw new ApiError(401, "No authentication token, access denied.");
+    }
 
     // const betterAuthCookie: string = req.cookies["better-auth.session_token"];
     // const token = betterAuthCookie.split(".")[0];
 
-    if (!token) {
-      throw new ApiError(401, "No authentication token, access denied.");
-    }
+    // if (!token) {
+    //   throw new ApiError(401, "No authentication token, access denied.");
+    // }
 
     try {
       const decoded = verifyAccessToken(token);

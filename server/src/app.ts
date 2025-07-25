@@ -22,7 +22,7 @@ app.use(session({
   secret: serverEnv.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: false }
+  cookie: { secure: false },
 }));
 
 // TODO: job.start()

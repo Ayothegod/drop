@@ -7,12 +7,19 @@ class AuthController {
   static async login(req: Request, res: Response) {
     const { email, password } = req.body;
 
-    const { user, token } = await AuthService.login(email, password);
+    // const { user, token } = await AuthService.login(email, password);
+
+    const { user } = {
+      user: { id: "hjhs7889732", email: email, username: "sampleUser" },
+    };
+
+    console.log(req.cookies);
+    
 
     res
       .status(200)
       .json(
-        new ApiResponse(200, { user, token }, "User logged-in successfully")
+        new ApiResponse(200, { user }, "User logged-in successfully")
       );
   }
 
