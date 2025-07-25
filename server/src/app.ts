@@ -1,0 +1,40 @@
+import express, { Request, Response } from "express";
+import cookieParser from "cookie-parser";
+import { errorHandler } from "./core/middlewares/error.middleware.js";
+import { asyncHandler } from "./core/middlewares/asyncHandler.js";
+import { ApiResponse } from "./core/middlewares/ApiResponse.js";
+import authRoutes from "./modules/auth/auth.routes.js";
+import bookRoutes  from "./modules/book/book.routes.js";
+import cors from "cors";
+import job from "./core/config/cron.js";
+
+const app = express();
+
+app.use(
+  cors({
+    origin: "http://localhost:8081",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
+
+// job.start()
+app.use(cookieParser());
+app.use(express.json({ limit: '5mb' }));
+// { limit: "16kb" }
+
+app.get(
+  "/api/v1/test",
+  asyncHandler(async (req: Request, res: Response) => {
+    return res
+      .status(200)
+      .json(new ApiResponse(200, "OK", "/ route working successfully"));
+  })
+);
+
+app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/books", bookRoutes);
+
+app.use(errorHandler as any);
+
+export default app;
