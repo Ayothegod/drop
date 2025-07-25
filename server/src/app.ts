@@ -8,6 +8,9 @@ import cors from "cors";
 import session from "express-session";
 import { PrismaSessionStore } from "@quixo3/prisma-session-store";
 import serverEnv from "./core/config/serverEnv.js";
+import { PrismaClient } from "@prisma/client";
+import { prisma } from "./core/database/prisma.js";
+
 const app = express();
 
 app.use(
@@ -23,6 +26,14 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: { secure: false },
+    store: new PrismaSessionStore(
+    prisma,
+    {
+      checkPeriod: 2 * 60 * 1000,
+      dbRecordIdIsSessionId: true,
+      dbRecordIdFunction: undefined,
+    }
+  ),
 }));
 
 // TODO: job.start()
