@@ -22,7 +22,7 @@ export const verifyToken = asyncHandler(
         where: { id: decoded },
         select: {
           email: true,
-          name: true,
+          fullname: true,
         },
       });
 

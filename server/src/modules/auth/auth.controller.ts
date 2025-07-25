@@ -13,9 +13,6 @@ class AuthController {
       user: { id: "hjhs7889732", email: email, username: "sampleUser" },
     };
 
-    // req.session.userId = user.id;
-    // logger.info(`Cookie: ${req.cookies["connect.sid"]}`);
-
     res
       .status(200)
       .json(new ApiResponse(200, { user }, "User logged-in successfully"));
@@ -23,12 +20,12 @@ class AuthController {
 
   static async register(req: Request, res: Response) {
     console.log("User details:", req.body);
-    const { email, password, username } = req.body;
+    const { email, password, fullname } = req.body;
 
-    const { user, token } = await AuthService.register(
+    const { user } = await AuthService.register(
       email,
       password,
-      username
+      fullname
     );
 
     res

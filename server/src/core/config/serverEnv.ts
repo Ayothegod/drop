@@ -9,6 +9,7 @@ const envSchema = z.object({
   CORS_ORIGIN: z.string().url(),
   DATABASE_URL: z.string().url(),
   SESSION_SECRET: z.string().min(1, "Session secret is required"),
+  RESEND_API_KEY: z.string().min(1, "Resend API key is required"),
   // JWT_ACCESS_SECRET: z.string().min(12),
   // JWT_REFRESH_SECRET: z.string().min(12),
   // CLOUDINARY_NAME: z.string(),

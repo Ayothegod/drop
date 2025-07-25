@@ -1,65 +1,72 @@
-import AuthRepository from "./auth.repository.js";
+import { prisma } from "../../core/database/prisma.js";
 import { ApiError } from "../../core/errors/ApiError.js";
-import { comparePassword, generateAccessToken, hashPassword } from "../../shared/utils/services.js";
+import {
+  comparePassword,
+  generateAccessToken,
+  hashPassword,
+} from "../../shared/utils/services.js";
 
 class AuthService {
-  static async register(email: string, password: string, username: string) {
+  static async register(email: string, password: string, fullname: string) {
     // check if email exists
-    const existingEmail = await AuthRepository.findUniqueUser({
-      email,
+    const existingEmail = await prisma.user.findUnique({
+      where: { email },
     });
 
     if (existingEmail) {
-      throw new ApiError(409, "This email already exists");
-    }
-
-    // check if username exists
-    const existingUsername = await AuthRepository.findUniqueUser({
-      username: username.toLowerCase(),
-    });
-
-    if (existingUsername) {
-      throw new ApiError(409, "This username already exists");
+      throw new ApiError(409, "This user already exists");
     }
 
     // hash user password
     const hashedPassword = await hashPassword(password);
 
-    const profileImage = `https://api.dicebear.com/7.x/avataaars/svg?seed=${username}`;
+    const image = `https://api.dicebear.com/7.x/avataaars/svg?seed=${fullname}`;
 
-    const user = await AuthRepository.createUser({
-      username: username.toLowerCase(),
-      email,
-      password: hashedPassword,
-      image: profileImage,
+    const user = await prisma.user.create({
+      data: {
+        fullname,
+        email,
+        password: hashedPassword,
+        image,
+      },
     });
 
-    // generate token and send to the client
-    const token = generateAccessToken(user);
+    // TODO: send verify account email
 
-    return { user, token };
+    return { user };
   }
 
   static async login(email: string, password: string) {
-
     // check if email exists
-    const user = await AuthRepository.findUniqueUser({
-      email,
-    });
+    // const user = await AuthRepository.findUniqueUser({
+    //   email,
+    // });
 
-    if (!user) {
-      throw new ApiError(409, "Invalid credentials");
-    }
+    // if (!user) {
+    //   throw new ApiError(409, "Invalid credentials");
+    // }
 
-    // hash user password
-    const isMatch = await comparePassword(password, user.password);
-    if (!isMatch) throw new ApiError(400, "Invalid credentials")
-    
-    
+    // // hash user password
+    // const isMatch = await comparePassword(password, user.password);
+    // if (!isMatch) throw new ApiError(400, "Invalid credentials")
+
     // generate token and send to the client
-    const token = generateAccessToken(user);
+    // const user = await prisma.user.findUnique({ where: { email: req.body.email } });
+    // if (!user) return res.status(401).send("Invalid credentials");
 
-    return { user, token };
+    // // Store userId in session data
+    // req.session.userId = user.id;
+    // req.session.userId = user.id;
+    // logger.info(`Cookie: ${req.cookies["connect.sid"]}`);
+
+    // // After session is created and userId is set in req.session
+    // await prisma.session.update({
+    //   where: { sid: req.session.id },
+    //   data: { userId: user.id },
+    // });
+    const user  = "Hello"
+
+    return { user };
   }
 
   // static async getUserProfile(userId: number) {
