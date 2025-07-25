@@ -24,7 +24,8 @@ class AuthService {
 
     const image = `https://api.dicebear.com/7.x/avataaars/svg?seed=${fullname}`;
 
-    const user = await prisma.user.create({
+    let user;
+    user = await prisma.user.create({
       data: {
         fullname,
         email,
@@ -42,19 +43,33 @@ class AuthService {
       throw new ApiError(409, "Unable to create user");
     }
 
-    // TODO: send verify account email
-    console.log(transporter);
+    // send verify account email
+    let emailSent = false;
 
-    const emailResponse = await transporter.sendMail({
-      from: '"Droplane - Your digital marketplace" <heyayomideadebisi@gmail.com>',
-      to: `ayodasilva12@gmail.com`,
-      subject: "Welcome to Droplane",
-      text: "sendgrids data easy to do anywhere, even with Node.js",
-      html: "<strong>But first, you need to verify your account!</strong>",
-    });
-    console.log(emailResponse);
+    try {
+      await transporter.sendMail({
+        from: '"Droplane - Your digital marketplace" <heyayomideadebisi@gmail.com>',
+        to: "ayodasilva12@gmail.com",
+        subject: "Welcome to Droplane",
+        text: "sendgrids data easy to do anywhere, even with Node.js",
+        html: "<strong>But first, you need to verify your account!</strong>",
+      });
 
-    return { user };
+      emailSent = true;
+      // console.log("Email sent:", emailResponse.messageId);
+    } catch (error) {
+      // console.error("Email failed:", error);
+      emailSent = false;
+
+      // if no verify account email, delete the user account
+      await prisma.user.delete({ where: { email } });
+      user = null;
+    }
+
+    let msg = emailSent
+      ? "User created successfully"
+      : "Verification email not sent, try to create an account again.";
+    return { user, msg, emailSent };
   }
 
   static async login(email: string, password: string) {

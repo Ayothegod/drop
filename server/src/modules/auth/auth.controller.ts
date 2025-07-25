@@ -21,21 +21,16 @@ class AuthController {
   static async register(req: Request, res: Response) {
     const { email, password, fullname } = req.body;
 
-    const { user } = await AuthService.register(
+    const { user, msg, emailSent } = await AuthService.register(
       email,
       password,
       fullname
     );
 
-    res
-      .status(201)
-      .json(new ApiResponse(201, { user }, "User created successfully"));
-  }
+    let status = emailSent ? 201 : 400;
 
-  // static async getProfile(req: Request, res: Response) {
-  //   const user = await AuthService.getUserProfile(req.user?.id); // Assuming middleware sets `req.user`
-  //   return res.status(200).json({ success: true, user });
-  // }
+    res.status(status).json(new ApiResponse(status, { user }, msg));
+  }
 }
 
 export default AuthController;
