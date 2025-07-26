@@ -12,7 +12,7 @@ import {
   Hr,
   Tailwind,
 } from "@react-email/components";
-import serverEnv from "../config/serverEnv";
+import serverEnv from "../config/serverEnv.js";
 
 const VerifyAccount = () => (
   <Html>
