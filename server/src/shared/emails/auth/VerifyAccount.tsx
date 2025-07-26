@@ -49,7 +49,7 @@ const VerifyAccount = ({
 
       <Text className="text-gray-500 text-sm leading-5">
         This verification link will expire in 30 minutes. If you didn't create
-        an account with MarketPlace, you can safely ignore this email.
+        an account with Drop Marketplace, you can safely ignore this email.
       </Text>
     </Section>
   </EmailLayout>

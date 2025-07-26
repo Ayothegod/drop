@@ -17,6 +17,12 @@ router.post(
   asyncHandler(AuthController.register)
 );
 
+router.get(
+  "/verify",
+  // validate(registerSchema),
+  asyncHandler(AuthController.register)
+);
+
 // app.post("/logout", (req, res) => {
 //   req.session.destroy(() => {
 //     res.send("Logged out");

@@ -22,7 +22,7 @@ export const hashAccountVerificationToken = async (token: string) => {
   try {
     return await argon2.hash(token);
   } catch (err) {
-    throw new ApiError(400, "Token hashing failed");
+    throw new ApiError(400, "Token hash failed");
   }
 };
 

@@ -2,8 +2,13 @@ import { transporter } from "../../core/config/nodemailer.js";
 import { prisma } from "../../core/database/prisma.js";
 import { renderVerifyAccount } from "../../shared/emails/auth/VerifyAccount.js";
 import { ApiError } from "../../core/errors/ApiError.js";
-import { hashAccountVerificationToken, hashPassword } from "../../shared/utils/services.js";
+import {
+  hashAccountVerificationToken,
+  hashPassword,
+} from "../../shared/utils/services.js";
 import { nanoid } from "nanoid";
+import serverEnv from "../../core/config/serverEnv.js";
+import logger from "../../core/logger/winston.logger.js";
 
 class AuthService {
   static async register(email: string, password: string, fullname: string) {
@@ -29,23 +34,39 @@ class AuthService {
         password: hashedPassword,
         image,
       },
-      select: {
-        fullname: true,
-        email: true,
-        image: true,
-      },
     });
 
     if (!user) {
       throw new ApiError(409, "Unable to create user");
     }
 
+    logger.info(`user done`)
+
+    // hash verification token
+    const token = nanoid(24);
+    const hashedToken = await hashAccountVerificationToken(token);
+    logger.info(`hash token done`)
+
+
+    const dbToken = await prisma.emailVerification.create({
+      data: {
+        token: hashedToken,
+        expiresAt: new Date(Date.now() + 1000 * 60 * 30),
+        userId: user.id,
+      },
+    });
+
+    if (!dbToken) {
+      throw new ApiError(409, "Unable to save verification token");
+    }
+    logger.info(`save token to db done`, dbToken)
+
+
     // send verify account email
     let emailSent = false;
 
     try {
-      let verificationUrl =
-        `https://droplane.com/verify?token=${verificationToken}`;
+      let verificationUrl = `${serverEnv.SERVER_URL}/auth/verify?token=${token}`;
       const html = await renderVerifyAccount(fullname, verificationUrl);
 
       await transporter.sendMail({
@@ -56,9 +77,9 @@ class AuthService {
       });
 
       emailSent = true;
-      // console.log("Email sent:", emailResponse.messageId);
+      console.log("Email sent:");
     } catch (error) {
-      // console.error("Email failed:", error);
+      console.error("Email failed:", error);
       emailSent = false;
 
       // if no verify account email, delete the user account
@@ -67,7 +88,7 @@ class AuthService {
     }
 
     let msg = emailSent
-      ? "User created successfully"
+      ? "User created successfully, check your email to verify your account."
       : "Verification email not sent, try to create an account again.";
     return { user, msg, emailSent };
   }

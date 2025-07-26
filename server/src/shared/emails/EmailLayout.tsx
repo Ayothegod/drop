@@ -25,23 +25,17 @@ const EmailLayout = ({ children, img }: EmailLayoutProps) => (
             {/* TOP */}
             <Section className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
               {/* HEADER bg-gradient-to-r from-blue-600 to-purple-600 */}
-              <Section className="bg-blue-600 px-8 py-6">
-                <Section className="flex items-center gap-8 justify-center">
-                  {img && (
-                    <Img
-                      src={img}
-                      alt="mail icon"
-                      className="h-10"
-                      height={24}
-                    />
-                  )}
-                  <Heading
-                    as="h1"
-                    className="text-2xl font-semibold text-white"
-                  >
-                    Droplane
-                  </Heading>
-                </Section>
+              <Section className="bg-blue-600 px-8 py-6 text-center">
+                {img && (
+                  <Img
+                    src={img}
+                    alt="mail-icon-icon8"
+                    className="h-20 mx-auto"
+                  />
+                )}
+                <Heading as="h1" className="text-2xl font-semibold text-white">
+                  Droplane
+                </Heading>
               </Section>
 
               {/* MAIN */}
@@ -51,7 +45,7 @@ const EmailLayout = ({ children, img }: EmailLayoutProps) => (
             {/* FOOTER */}
             <Section className="mt-8 text-center">
               <Text className="text-gray-500 text-sm">
-                © 2025 Drop MarketPlace. All rights reserved.
+                © 2025 Drop Marketplace. All rights reserved.
               </Text>
               <Text className="text-gray-400 text-xs mt-2">
                 123 Commerce Street, Business City, BC 12345

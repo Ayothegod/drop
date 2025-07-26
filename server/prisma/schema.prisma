@@ -46,6 +46,3 @@ model EmailVerification {
   @@map("email_verification_token")
 }
 
-    // hash verification token
-    const token = nanoid(24)
-    const verificationToken = hashAccountVerificationToken(token);

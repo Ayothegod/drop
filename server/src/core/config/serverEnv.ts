@@ -13,6 +13,7 @@ const envSchema = z.object({
   SENDGRID_EMAIL_FROM: z.string().email("Invalid email format for Resend"),
   GOOGLE_APP_PASSWORD: z.string().min(1, "Google app password is required"),
   CLIENT_URL: z.string().min(1, "Client app url is required"),
+  SERVER_URL: z.string().min(1, "server url is required"),
   VERIFICATION_SECRET: z.string().min(1, "Verification secret is required"),
   // JWT_ACCESS_SECRET: z.string().min(12),
   // JWT_REFRESH_SECRET: z.string().min(12),
