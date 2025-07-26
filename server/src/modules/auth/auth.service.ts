@@ -1,13 +1,9 @@
 import { transporter } from "../../core/config/nodemailer.js";
 import { prisma } from "../../core/database/prisma.js";
-import { renderVerifyAccount } from "../../core/emails/VerifyAccount.js";
-import { renderWelcomeEmail } from "../../core/emails/WelcomeEmail.js";
+import { renderVerifyAccount } from "../../shared/emails/auth/VerifyAccount.js";
+import { renderWelcomeEmail } from "../../shared/emails/auth/WelcomeEmail.js";
 import { ApiError } from "../../core/errors/ApiError.js";
-import {
-  hashPassword
-} from "../../shared/utils/services.js";
-
-
+import { hashPassword } from "../../shared/utils/services.js";
 
 class AuthService {
   static async register(email: string, password: string, fullname: string) {
@@ -39,22 +35,24 @@ class AuthService {
         image: true,
       },
     });
-    
+
     if (!user) {
       throw new ApiError(409, "Unable to create user");
     }
-    
+
     // send verify account email
     let emailSent = false;
-    
+
     try {
-      const html = await renderVerifyAccount();
+      let verificationUrl =
+        "https://droplane.com/verify?email=" + encodeURIComponent(email);
+      const html = await renderVerifyAccount(fullname, verificationUrl);
 
       await transporter.sendMail({
         from: '"Droplane - Your digital marketplace" <heyayomideadebisi@gmail.com>',
         to: "ayodasilva12@gmail.com",
         subject: "Welcome to Droplane",
-        html: html
+        html: html,
       });
 
       emailSent = true;

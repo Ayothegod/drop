@@ -16,6 +16,12 @@ router.post(
   validate(registerSchema),
   asyncHandler(AuthController.register)
 );
+
+// app.post("/logout", (req, res) => {
+//   req.session.destroy(() => {
+//     res.send("Logged out");
+//   });
+// });
 // router.get("/me", AuthController.getProfile);
 
 export default router;
