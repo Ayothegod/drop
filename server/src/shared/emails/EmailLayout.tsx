@@ -15,7 +15,7 @@ interface EmailLayoutProps {
   img?: string;
 }
 
-const Base = ({ children, img }: EmailLayoutProps) => (
+const EmailLayout = ({ children, img }: EmailLayoutProps) => (
   <Html>
     <Head />
     <Body>
@@ -24,14 +24,15 @@ const Base = ({ children, img }: EmailLayoutProps) => (
           <Section className="mx-auto px-4 max-w-2xl">
             {/* TOP */}
             <Section className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-              {/* HEADER */}
-              <Section className="bg-gradient-to-r from-blue-600 to-purple-600 px-8 py-6">
+              {/* HEADER bg-gradient-to-r from-blue-600 to-purple-600 */}
+              <Section className="bg-blue-600 px-8 py-6">
                 <Section className="flex items-center gap-8 justify-center">
                   {img && (
                     <Img
-                      src="/placeholder.svg?height=40&width=120"
-                      alt="MarketPlace"
+                      src={img}
+                      alt="mail icon"
                       className="h-10"
+                      height={24}
                     />
                   )}
                   <Heading
@@ -63,4 +64,4 @@ const Base = ({ children, img }: EmailLayoutProps) => (
   </Html>
 );
 
-export default Base;
+export default EmailLayout;

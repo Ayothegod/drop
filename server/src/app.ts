@@ -46,6 +46,13 @@ app.use(express.json({ limit: "5mb" }));
 app.get(
   "/api/v1/test",
   asyncHandler(async (req: Request, res: Response) => {
+    // const verificationToken = generateAccountVerificationToken(
+    //   "ayodasilva12@gmail.com"
+    // );
+    // console.log(verificationToken);
+
+    // const verifiedToken = verifyAccountVerificationToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImF5b26cIsM");
+    // console.log(verifiedToken);
 
     return res
       .status(200)

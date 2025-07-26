@@ -1,42 +1,42 @@
-import jwt from "jsonwebtoken";
 import argon2 from "argon2";
-import { ApiError } from "../../core/errors/ApiError.js";
-import { User } from "@prisma/client";
+import jwt from "jsonwebtoken";
 import serverEnv from "../../core/config/serverEnv.js";
-import { Decoded } from "../types/lib.js";
+import { ApiError } from "../../core/errors/ApiError.js";
 
-// const JWT_ACCESS_SECRET = serverEnv.JWT_ACCESS_SECRET;
-// const JWT_REFRESH_SECRET = serverEnv.JWT_REFRESH_SECRET;
-
-// Generate access token
-// export const generateAccessToken = (user: User) => {
-//   return jwt.sign({ id: user?.id, email: user?.email }, JWT_ACCESS_SECRET, {
-//     expiresIn: "7d",
+// export const generateAccountVerificationToken = (email: string) => {
+//   return jwt.sign({ email }, serverEnv.VERIFICATION_SECRET, {
+//     expiresIn: "30m",
 //   });
 // };
 
-// Generate refresh token
-// export const generateRefreshToken = (user: any) => {
-//   return jwt.sign({ id: user?.id }, JWT_REFRESH_SECRET, { expiresIn: "30d" });
-// };
-
-// Verify access token
-// export const verifyAccessToken = (token: string) => {
+// export const verifyAccountVerificationToken = (token: string) => {
 //   try {
-//     return jwt.verify(token, JWT_ACCESS_SECRET) as Decoded;
+//     return jwt.verify(token, serverEnv.VERIFICATION_SECRET);
 //   } catch (error) {
 //     throw new ApiError(400, "Unable to verify access token.");
 //   }
 // };
 
-// Verify refresh token
-// export const verifyRefreshToken = (token: string) => {
-//   try {
-//     return jwt.verify(token, JWT_REFRESH_SECRET);
-//   } catch (error) {
-//     return null;
-//   }
-// };
+// hash verificationToken
+export const hashAccountVerificationToken = async (token: string) => {
+  try {
+    return await argon2.hash(token);
+  } catch (err) {
+    throw new ApiError(400, "Token hashing failed");
+  }
+};
+
+// Compare password using Argon2
+export const clearAccountVerificationToken = async (
+  token: string,
+  hashedToken: string
+) => {
+  try {
+    return await argon2.verify(hashedToken, token);
+  } catch (err) {
+    throw new ApiError(400, "Token comparison failed");
+  }
+};
 
 // Hash password using Argon2
 export const hashPassword = async (password: string) => {

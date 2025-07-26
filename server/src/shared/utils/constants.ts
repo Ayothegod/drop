@@ -1,6 +1,6 @@
 export const HttpStatus = {
   ok: 200, // Successful request
-  created: 201, // Resource created 
+  created: 201, // Resource created
   noContent: 204, // Success, but no response body (e.g. logout)
 
   // 🚫 Client Errors
@@ -13,6 +13,13 @@ export const HttpStatus = {
   internalServerError: 500, // Unexpected server crash or bug
   serviceUnavailable: 503, // Server is up but unavailable (e.g. maintenance)
 };
+
+// ✅ Keep it simple	Droplane — Your digital marketplace
+// 💡 Add clarity	Droplane — Sell and download digital files instantly
+// 🎯 Focus on creators	Droplane — For creators, by creators
+// ⚡ Quick + modern	Droplane — Drop files. Get paid. Instantly.
+// 📦 What it does	Droplane — Your multi-seller digital store
+// 🧠 Balanced	Droplane — Create. Sell. Download. Done.
 
 export const SocketEventEnum = Object.freeze({
   CONNECTED_EVENT: "connected",

@@ -8,16 +8,17 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(uuid())
-  fullname      String
-  email         String
-  emailVerified Boolean   @default(false)
-  password      String?
-  image         String
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  sessions      Session[]
+  id                String              @id @default(uuid())
+  fullname          String
+  email             String
+  emailVerified     Boolean             @default(false)
+  password          String?
+  image             String
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  sessions          Session[]
   // profile Profile?
+  EmailVerification EmailVerification[]
 
   @@unique([email])
   @@map("user")
@@ -33,3 +34,18 @@ model Session {
   userId    String?
   user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
+
+model EmailVerification {
+  id        String   @id @default(cuid())
+  token     String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("email_verification_token")
+}
+
+    // hash verification token
+    const token = nanoid(24)
+    const verificationToken = hashAccountVerificationToken(token);

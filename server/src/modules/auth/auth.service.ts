@@ -1,9 +1,9 @@
 import { transporter } from "../../core/config/nodemailer.js";
 import { prisma } from "../../core/database/prisma.js";
 import { renderVerifyAccount } from "../../shared/emails/auth/VerifyAccount.js";
-import { renderWelcomeEmail } from "../../shared/emails/auth/WelcomeEmail.js";
 import { ApiError } from "../../core/errors/ApiError.js";
-import { hashPassword } from "../../shared/utils/services.js";
+import { hashAccountVerificationToken, hashPassword } from "../../shared/utils/services.js";
+import { nanoid } from "nanoid";
 
 class AuthService {
   static async register(email: string, password: string, fullname: string) {
@@ -45,13 +45,13 @@ class AuthService {
 
     try {
       let verificationUrl =
-        "https://droplane.com/verify?email=" + encodeURIComponent(email);
+        `https://droplane.com/verify?token=${verificationToken}`;
       const html = await renderVerifyAccount(fullname, verificationUrl);
 
       await transporter.sendMail({
-        from: '"Droplane - Your digital marketplace" <heyayomideadebisi@gmail.com>',
-        to: "ayodasilva12@gmail.com",
-        subject: "Welcome to Droplane",
+        from: '"Droplane — For creators, by creators" <heyayomideadebisi@gmail.com>',
+        to: `${email}`,
+        subject: "Verify your drop account",
         html: html,
       });
 
