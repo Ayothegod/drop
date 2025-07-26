@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { ApiError } from "../errors/ApiError.js";
 import logger from "../logger/winston.logger.js";
-import serverEnv from "../config/serverEnv.js";
+import serverEnv from "../config/env.js";
 
 const errorHandler = (
   err: any,

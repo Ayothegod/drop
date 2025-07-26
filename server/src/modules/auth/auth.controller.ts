@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import AuthService from "./auth.service.js";
 import logger from "../../core/logger/winston.logger.js";
 import { ApiResponse } from "../../core/middlewares/ApiResponse.js";
+import { httpStatus } from "../../shared/utils/constants.js";
 
 class AuthController {
   static async login(req: Request, res: Response) {
@@ -21,15 +22,11 @@ class AuthController {
   static async register(req: Request, res: Response) {
     const { email, password, fullname } = req.body;
 
-    const { user, msg, emailSent } = await AuthService.register(
-      email,
-      password,
-      fullname
-    );
+    const { user, msg } = await AuthService.register(email, password, fullname);
 
-    let status = emailSent ? 201 : 400;
-
-    res.status(status).json(new ApiResponse(status, { user }, msg));
+    res
+      .status(httpStatus.created)
+      .json(new ApiResponse(httpStatus.created, user, msg));
   }
 }
 

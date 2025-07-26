@@ -3,7 +3,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import express, { Request, Response } from "express";
 import session from "express-session";
-import serverEnv from "./core/config/serverEnv.js";
+import serverEnv from "./core/config/env.js";
 import { prisma } from "./core/database/prisma.js";
 import { ApiResponse } from "./core/middlewares/ApiResponse.js";
 import { asyncHandler } from "./core/middlewares/asyncHandler.js";
@@ -42,21 +42,10 @@ app.use(
 app.use(cookieParser());
 app.use(express.json({ limit: "5mb" }));
 // { limit: "16kb" }
-import crypto from "crypto";
-import { nanoid } from "nanoid";
 
 app.get(
   "/api/v1/test",
   asyncHandler(async (req: Request, res: Response) => {
-    // const verificationToken = generateAccountVerificationToken(
-    //   "ayodasilva12@gmail.com"
-    // );
-    // console.log(verificationToken);
-
-    // const verifiedToken = verifyAccountVerificationToken("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImF5b26cIsM");
-    // console.log(verifiedToken);
-    console.log(crypto.randomBytes(32).toString("hex"));
-    console.log(nanoid(24))
 
     return res
       .status(200)

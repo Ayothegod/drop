@@ -1,18 +1,11 @@
-import * as React from "react";
 import {
-  Html,
-  Head,
-  Body,
-  Section,
-  Img,
-  Text,
   Heading,
-  Button,
-  render,
   Hr,
-  Tailwind,
+  render,
+  Section,
+  Text
 } from "@react-email/components";
-import serverEnv from "../../../core/config/serverEnv.js";
+import * as React from "react";
 import { EmailButton } from "../EmailButton.js";
 import EmailLayout from "../EmailLayout.js";
 

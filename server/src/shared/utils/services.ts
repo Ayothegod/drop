@@ -1,6 +1,6 @@
 import argon2 from "argon2";
 import jwt from "jsonwebtoken";
-import serverEnv from "../../core/config/serverEnv.js";
+import serverEnv from "../../core/config/env.js";
 import { ApiError } from "../../core/errors/ApiError.js";
 
 // export const generateAccountVerificationToken = (email: string) => {

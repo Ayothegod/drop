@@ -4,7 +4,7 @@ import { createServer } from "http";
 
 import logger from "./core/logger/winston.logger.js";
 import morganMiddleware from "./core/logger/morgan.logger.js";
-import env from "./core/config/serverEnv.js";
+import env from "./core/config/env.js";
 
 const httpServer = createServer(app);
 
@@ -27,6 +27,3 @@ process.on("uncaughtException", (err) => {
   logger.error("Uncaught Exception: " + err);
   process.exit(1);
 });
-
-// const BASE_URL = 'http://192.168.x.x:4000';
-// ifconfig

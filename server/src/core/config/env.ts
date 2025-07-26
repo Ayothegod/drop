@@ -1,28 +1,34 @@
 import { z } from "zod";
 import dotenv from "dotenv";
+import logger from "../logger/winston.logger";
 
 dotenv.config();
 
 const envSchema = z.object({
   NODE_ENV: z.enum(["development", "production", "test"]),
-  PORT: z.string(),
+  PORT: z.coerce.number().default(3000),
   CORS_ORIGIN: z.string().url(),
-  DATABASE_URL: z.string().url(),
   SESSION_SECRET: z.string().min(1, "Session secret is required"),
   SENDGRID_API_KEY: z.string().min(1, "Sendgrid API key is required"),
   SENDGRID_EMAIL_FROM: z.string().email("Invalid email format for Resend"),
   GOOGLE_APP_PASSWORD: z.string().min(1, "Google app password is required"),
-  CLIENT_URL: z.string().min(1, "Client app url is required"),
-  SERVER_URL: z.string().min(1, "server url is required"),
   VERIFICATION_SECRET: z.string().min(1, "Verification secret is required"),
-  // JWT_ACCESS_SECRET: z.string().min(12),
-  // JWT_REFRESH_SECRET: z.string().min(12),
-  // CLOUDINARY_NAME: z.string(),
-  // CLOUDINARY_APIKEY: z.string(),
-  // CLOUDINARY_APISECRET: z.string(),
-  // API_URL: z.string()
+
+  DATABASE_URL: z.string().url(),
+  CLIENT_URL: z.string().url().min(1, "Client app url is required"),
+  SERVER_URL: z.string().url().min(1, "server url is required"),
 });
 
-const serverEnv = envSchema.parse(process.env);
+const _parsed = envSchema.safeParse(process.env);
 
+if (!_parsed.success) {
+  logger.error("❌ Invalid environment variables:");
+  _parsed.error.errors.forEach((err) => {
+    logger.error(`• ${err.path.join(".")}: ${err.message}`);
+  });
+  process.exit(1);
+}
+
+const serverEnv = _parsed.data;
 export default serverEnv;
+
