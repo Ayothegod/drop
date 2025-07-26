@@ -28,6 +28,16 @@ class AuthController {
       .status(httpStatus.created)
       .json(new ApiResponse(httpStatus.created, user, msg));
   }
+
+  static async verify(req: Request, res: Response) {
+    const { token } = req.query
+
+    const {msg} = await AuthService.verify(token)
+
+    res
+      .status(httpStatus.created)
+      .json(new ApiResponse(httpStatus.created, "user", "msg"));
+  }
 }
 
 export default AuthController;

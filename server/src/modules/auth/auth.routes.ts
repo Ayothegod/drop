@@ -19,8 +19,7 @@ router.post(
 
 router.get(
   "/verify",
-  // validate(registerSchema),
-  asyncHandler(AuthController.register)
+  asyncHandler(AuthController.verify)
 );
 
 // app.post("/logout", (req, res) => {

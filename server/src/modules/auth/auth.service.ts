@@ -1,6 +1,7 @@
+import { Request } from "express";
 import { nanoid } from "nanoid";
-import { transporter } from "../../core/config/nodemailer.js";
 import serverEnv from "../../core/config/env.js";
+import { transporter } from "../../core/config/nodemailer.js";
 import { prisma } from "../../core/database/prisma.js";
 import { ApiError } from "../../core/errors/ApiError.js";
 import { renderVerifyAccount } from "../../shared/emails/auth/VerifyAccount.js";
@@ -8,7 +9,9 @@ import { httpStatus } from "../../shared/utils/constants.js";
 import {
   hashAccountVerificationToken,
   hashPassword,
+  verifyAccountVerificationToken,
 } from "../../shared/utils/services.js";
+import { tokenSchema } from "./schema.js";
 
 class AuthService {
   static async register(email: string, password: string, fullname: string) {
@@ -95,6 +98,54 @@ class AuthService {
     const user = "Hello";
 
     return { user };
+  }
+
+  static async verify(token: Request["query"]["token"]) {
+    // Look up token in DB
+    // If token exists and not expired:
+    // Mark user verified: true
+    // Delete the token
+    // Redirect to /auth/verified (or dashboard)
+    // If token is invalid/expired → redirect to error page.
+
+    const _parsedToken = tokenSchema.safeParse(token);
+    if (!_parsedToken.success) {
+      const message = _parsedToken.error.errors[0].message;
+      throw new ApiError(httpStatus.badRequest, message);
+    }
+    const rawToken = _parsedToken.data;
+
+    const dbTokens = await prisma.emailVerification.findMany({
+      where: {
+        expiresAt: {
+          gt: new Date(), // not expired
+        },
+      },
+    });
+    if (!dbTokens)
+      throw new ApiError(
+        httpStatus.unauthorized,
+        "Token is invalid or has expired"
+      );
+
+    let matchedToken;
+    for (const record of dbTokens) {
+      const isMatch = await verifyAccountVerificationToken(rawToken, record.token);
+      if (isMatch) {
+        matchedToken = record;
+        break;
+      }
+      throw new ApiError(httpStatus.conflict, "Token is invalid");
+    }
+
+    // await prisma.user.update({
+    //   where: { id: dbToken.userId as string },
+    //   data: { emailVerified: true },
+    // });
+    // console.log();
+    
+
+    return { msg: "account verified" };
   }
 }
 

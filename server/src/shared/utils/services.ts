@@ -2,6 +2,7 @@ import argon2 from "argon2";
 import jwt from "jsonwebtoken";
 import serverEnv from "../../core/config/env.js";
 import { ApiError } from "../../core/errors/ApiError.js";
+import { httpStatus } from "./constants.js";
 
 // export const generateAccountVerificationToken = (email: string) => {
 //   return jwt.sign({ email }, serverEnv.VERIFICATION_SECRET, {
@@ -22,19 +23,19 @@ export const hashAccountVerificationToken = async (token: string) => {
   try {
     return await argon2.hash(token);
   } catch (err) {
-    throw new ApiError(400, "Token hash failed");
+    throw new ApiError(httpStatus.internalServerError, "Token hash failed");
   }
 };
 
 // Compare password using Argon2
-export const clearAccountVerificationToken = async (
+export const verifyAccountVerificationToken = async (
   token: string,
   hashedToken: string
 ) => {
   try {
     return await argon2.verify(hashedToken, token);
   } catch (err) {
-    throw new ApiError(400, "Token comparison failed");
+    throw new ApiError(httpStatus.badRequest, "wrong token provided");
   }
 };
 

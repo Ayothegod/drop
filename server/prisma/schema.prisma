@@ -37,7 +37,7 @@ model Session {
 
 model EmailVerification {
   id        String   @id @default(cuid())
-  token     String
+  token     String   @unique
   expiresAt DateTime
   createdAt DateTime @default(now())
   userId    String?
@@ -45,4 +45,3 @@ model EmailVerification {
 
   @@map("email_verification_token")
 }
-
