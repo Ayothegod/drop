@@ -13,6 +13,7 @@ export const verifyToken = asyncHandler(
     if (!req.cookies["connect.sid"]) {
       throw new ApiError(401, "No authentication token, access denied.");
     }
+    // logger.info(`Cookie: ${req.cookies["connect.sid"]}`);
 
     try {
       const decoded = req.session.userId

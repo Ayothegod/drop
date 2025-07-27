@@ -16,7 +16,7 @@ export const httpStatus = {
 
 export const SocketEventEnum = Object.freeze({
   CONNECTED_EVENT: "connected",
-  DISCONNECT_EVENT: "disconnect",
+DISCONNECT_EVENT: "disconnect",
   SOCKET_ERROR_EVENT: "socketError",
 });
 

@@ -9,15 +9,11 @@ class AuthController {
   static async login(req: Request, res: Response) {
     const { email, password } = req.body;
 
-    // const { user, token } = await AuthService.login(email, password);
-
-    const { user } = {
-      user: { id: "hjhs7889732", email: email, username: "sampleUser" },
-    };
+    const { user, msg } = await AuthService.login(email, password, req);
 
     res
-      .status(200)
-      .json(new ApiResponse(200, { user }, "User logged-in successfully"));
+      .status(httpStatus.ok)
+      .json(new ApiResponse(httpStatus.ok, { user }, msg));
   }
 
   static async register(req: Request, res: Response) {

@@ -7,6 +7,7 @@ import { ApiError } from "../../core/errors/ApiError.js";
 import { renderVerifyAccount } from "../../shared/emails/auth/VerifyAccount.js";
 import { httpStatus } from "../../shared/utils/constants.js";
 import {
+  comparePassword,
   hashAccountVerificationToken,
   hashPassword,
   verifyAccountVerificationToken,
@@ -69,37 +70,58 @@ class AuthService {
     return { user, msg: "user created." };
   }
 
-  static async login(email: string, password: string) {
+  static async login(email: string, password: string, req: Request) {
     // check if email exists
-    // const user = await AuthRepository.findUniqueUser({
-    //   email,
-    // });
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
+    if (!user) throw new ApiError(httpStatus.notFound, "Invalid credentials");
 
-    // if (!user) {
-    //   throw new ApiError(409, "Invalid credentials");
-    // }
+    const isMatch = await comparePassword(password, user.password as string);
+    if (!isMatch)
+      throw new ApiError(httpStatus.notFound, "Invalid credentials");
 
-    // // hash user password
-    // const isMatch = await comparePassword(password, user.password);
-    // if (!isMatch) throw new ApiError(400, "Invalid credentials")
+    // create session ccokie
+    req.session.userId = user.id;
 
-    // generate token and send to the client
-    // const user = await prisma.user.findUnique({ where: { email: req.body.email } });
-    // if (!user) return res.status(401).send("Invalid credentials");
+    // After session is created and userId is set in req.session
+    const session = await prisma.session.create({
+      data: {
+        userId: user.id,
+        sid: req.session.id,
+        expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
+        data: JSON.stringify({
+          email: user.email,
+          emailVerified: user.emailVerified,
+          createdAt: user.createdAt,
+        }),
+      },
+    });
+    if (!session) {
+      req.session.destroy((err) => {
+        // console.log("Session destroy error:", err);
+      });
+      throw new ApiError(
+        httpStatus.internalServerError,
+        "Unable to create session, please try again."
+      );
+    }
 
-    // // Store userId in session data
-    // req.session.userId = user.id;
-    // req.session.userId = user.id;
-    // logger.info(`Cookie: ${req.cookies["connect.sid"]}`);
+    let dropUrl = `${serverEnv.CLIENT_URL}`;
+    // const html = await renderVerifyAccount(fullname, verificationUrl);
+    const info = await transporter.sendMail({
+      from: `"Start creating, start earning 💼" <${serverEnv.SENDGRID_EMAIL_FROM}>`,
+      to: `${email}`,
+      subject: "Welcome to Drop 🚀",
+      html: "html",
+    });
+    if (!info.messageId)
+      throw new ApiError(
+        httpStatus.internalServerError,
+        "welcome email not sent."
+      );
 
-    // // After session is created and userId is set in req.session
-    // await prisma.session.update({
-    //   where: { sid: req.session.id },
-    //   data: { userId: user.id },
-    // });
-    const user = "Hello";
-
-    return { user };
+    return { user, msg: "User logged-in successfully" };
   }
 
   static async verify(token: Request["query"]["token"]) {
