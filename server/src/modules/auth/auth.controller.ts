@@ -3,6 +3,7 @@ import AuthService from "./auth.service.js";
 import logger from "../../core/logger/winston.logger.js";
 import { ApiResponse } from "../../core/middlewares/ApiResponse.js";
 import { httpStatus } from "../../shared/utils/constants.js";
+import serverEnv from "../../core/config/env.js";
 
 class AuthController {
   static async login(req: Request, res: Response) {
@@ -30,13 +31,16 @@ class AuthController {
   }
 
   static async verify(req: Request, res: Response) {
-    const { token } = req.query
+    const { token } = req.query;
 
-    const {msg} = await AuthService.verify(token)
+    const { success, error } = await AuthService.verify(token);
+    // console.log(success, error);
 
-    res
-      .status(httpStatus.created)
-      .json(new ApiResponse(httpStatus.created, "user", "msg"));
+    if (success) {
+      res.redirect(`${serverEnv.CLIENT_URL}/auth/verified`);
+    } else if (error) {
+      res.redirect(`${serverEnv.CLIENT_URL}/auth/verify-failed?error=${error}`);
+    }
   }
 }
 

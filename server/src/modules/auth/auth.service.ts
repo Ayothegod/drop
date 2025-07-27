@@ -1,4 +1,4 @@
-import { Request } from "express";
+import { Request, Response } from "express";
 import { nanoid } from "nanoid";
 import serverEnv from "../../core/config/env.js";
 import { transporter } from "../../core/config/nodemailer.js";
@@ -12,6 +12,8 @@ import {
   verifyAccountVerificationToken,
 } from "../../shared/utils/services.js";
 import { tokenSchema } from "./schema.js";
+import { EmailVerification } from "@prisma/client";
+import { error } from "console";
 
 class AuthService {
   static async register(email: string, password: string, fullname: string) {
@@ -101,51 +103,55 @@ class AuthService {
   }
 
   static async verify(token: Request["query"]["token"]) {
-    // Look up token in DB
-    // If token exists and not expired:
-    // Mark user verified: true
-    // Delete the token
-    // Redirect to /auth/verified (or dashboard)
-    // If token is invalid/expired → redirect to error page.
-
     const _parsedToken = tokenSchema.safeParse(token);
     if (!_parsedToken.success) {
       const message = _parsedToken.error.errors[0].message;
-      throw new ApiError(httpStatus.badRequest, message);
+      return { error: message };
     }
     const rawToken = _parsedToken.data;
 
-    const dbTokens = await prisma.emailVerification.findMany({
-      where: {
-        expiresAt: {
-          gt: new Date(), // not expired
+    try {
+      const dbTokens = await prisma.emailVerification.findMany({
+        where: {
+          expiresAt: {
+            gt: new Date(), // not expired
+          },
         },
-      },
-    });
-    if (!dbTokens)
-      throw new ApiError(
-        httpStatus.unauthorized,
-        "Token is invalid or has expired"
-      );
-
-    let matchedToken;
-    for (const record of dbTokens) {
-      const isMatch = await verifyAccountVerificationToken(rawToken, record.token);
-      if (isMatch) {
-        matchedToken = record;
-        break;
+      });
+      if (!dbTokens[0]) {
+        return { error: "No valid tokens found" };
       }
-      throw new ApiError(httpStatus.conflict, "Token is invalid");
+
+      let matchedToken: null | EmailVerification = null;
+      for (const record of dbTokens) {
+        const isMatch = await verifyAccountVerificationToken(
+          rawToken,
+          record.token
+        );
+        if (isMatch) {
+          matchedToken = record;
+          break;
+        }
+      }
+      if (matchedToken == null) {
+        return { error: "Token is invalid or has expired." };
+      }
+
+      await prisma.$transaction(async (tx) => {
+        await tx.user.update({
+          where: { id: matchedToken.userId as string },
+          data: { emailVerified: true },
+        });
+
+        await tx.emailVerification.deleteMany({
+          where: { userId: matchedToken.userId },
+        });
+      });
+
+      return { success: true };
+    } catch (error) {
+      return { error: "Unknown error, try again later." };
     }
-
-    // await prisma.user.update({
-    //   where: { id: dbToken.userId as string },
-    //   data: { emailVerified: true },
-    // });
-    // console.log();
-    
-
-    return { msg: "account verified" };
   }
 }
 
