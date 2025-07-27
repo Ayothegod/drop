@@ -1,10 +1,8 @@
-import { Request, Response, Router } from "express";
-import AuthController from "./auth.controller.js";
-import { validate } from "../../core/middlewares/validateZod.js";
-import { loginSchema, registerSchema } from "./schema.js";
+import { Router } from "express";
 import { asyncHandler } from "../../core/middlewares/asyncHandler.js";
-import { ApiResponse } from "../../core/middlewares/ApiResponse.js";
-import { prisma } from "../../core/database/prisma.js";
+import { validate } from "../../core/middlewares/validateZod.js";
+import AuthController from "./auth.controller.js";
+import { loginSchema, registerSchema } from "./schema.js";
 
 const router = Router();
 
