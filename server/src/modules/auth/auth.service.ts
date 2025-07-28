@@ -16,6 +16,7 @@ import {
 import { tokenSchema } from "./schema.js";
 import { EmailVerification } from "@prisma/client";
 import { renderWelcomeEmail } from "../../shared/emails/auth/WelcomeUser.js";
+import { renderPasswordReset } from "../../shared/emails/auth/PasswordReset.js";
 
 class AuthService {
   static async register(email: string, password: string, fullname: string) {
@@ -210,47 +211,34 @@ class AuthService {
 
     const token = nanoid(6);
     const hashedToken = await hashForgetPasswordToken(token);
+    console.log(token, hashedToken);
 
-    // const isVerified = await prisma.user.findUnique({
-    //   where: { email, emailVerified: true },
-    // });
-    // if (isVerified)
-    //   throw new ApiError(httpStatus.conflict, "This user is already verified.");
+    await prisma.$transaction(async (tx) => {
+      await tx.passwordReset.create({
+        data: {
+          token: hashedToken,
+          expiresAt: new Date(Date.now() + 1000 * 60 * 30),
+          userId: user.id,
+        },
+      });
 
-    // const token = nanoid(24);
-    // const hashedToken = await hashAccountVerificationToken(token);
+      let resetPasswordUrl = `${serverEnv.CLIENT_URL}/auth/reset-password?token=${token}`;
+      const html = await renderPasswordReset(user.fullname, resetPasswordUrl);
 
-    // await prisma.$transaction(async (tx) => {
-    //   const dbToken = await tx.emailVerification.create({
-    //     data: {
-    //       token: hashedToken,
-    //       expiresAt: new Date(Date.now() + 1000 * 60 * 30),
-    //       userId: user.id,
-    //     },
-    //   });
-    //   if (!dbToken)
-    //     throw new ApiError(
-    //       httpStatus.internalServerError,
-    //       "Unable to create verification token, please try again."
-    //     );
+      const info = await transporter.sendMail({
+        from: `"Drop - Forget password" <${serverEnv.SENDGRID_EMAIL_FROM}>`,
+        to: `${email}`,
+        subject: "Reset your Drop password",
+        html: html,
+      });
+      if (!info.messageId)
+        throw new ApiError(
+          httpStatus.internalServerError,
+          "Forget password email not sent, please try again."
+        );
+    });
 
-    //   let verificationUrl = `${serverEnv.SERVER_URL}/auth/verify?token=${token}`;
-    //   const html = await renderVerifyAccount(user.fullname, verificationUrl);
-
-    //   const info = await transporter.sendMail({
-    //     from: `"Drop - Verification" <${serverEnv.SENDGRID_EMAIL_FROM}>`,
-    //     to: `${email}`,
-    //     subject: "Verify your Drop account",
-    //     html: html,
-    //   });
-    //   if (!info.messageId)
-    //     throw new ApiError(
-    //       httpStatus.internalServerError,
-    //       "Verification email not sent, please try again."
-    //     );
-    // });
-
-    return { msg: "verification email sent." };
+    return { msg: "Check your email for more info." };
   }
 }
 

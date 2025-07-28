@@ -11,7 +11,7 @@ model User {
   id                String              @id @default(uuid())
   fullname          String
   email             String
-  emailVerified     Boolean             @default(false)
+  emailVerified     Boolean             @unique @default(false)
   password          String?
   image             String
   createdAt         DateTime            @default(now())
@@ -21,7 +21,7 @@ model User {
   EmailVerification EmailVerification[]
   PasswordReset     PasswordReset?
 
-  @@unique([email, emailVerified])
+  @@unique([email])
   @@map("user")
 }
 
@@ -41,8 +41,8 @@ model EmailVerification {
   token     String   @unique
   expiresAt DateTime
   createdAt DateTime @default(now())
-  userId    String?
-  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("email_verification_token")
 }

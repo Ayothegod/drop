@@ -1,54 +1,57 @@
-// import { EmailLayout } from "../components/email-layout"
-// import { EmailHeader } from "../components/email-header"
-// import { EmailButton } from "../components/email-button"
+import {
+  Column,
+  Heading,
+  Hr,
+  render,
+  Row,
+  Section,
+  Text,
+} from "@react-email/components";
+import EmailLayout from "../EmailLayout";
+import * as React from "react";
+import { EmailButton } from "../EmailButton";
+import serverEnv from "../../../core/config/env";
 
-// interface PasswordResetProps {
-//   userName: string
-//   resetUrl: string
-//   ipAddress?: string
-//   userAgent?: string
-// }
+interface PasswordResetProps {
+  fullname: string;
+  resetUrl: string;
+}
 
-// export const PasswordReset = ({
-//   userName = "John Doe",
-//   resetUrl = "https://marketplace.com/reset-password",
-//   ipAddress = "192.168.1.1",
-//   userAgent = "Chrome on Windows",
-// }: PasswordResetProps) => {
-//   return (
-//     <EmailLayout previewText="Reset your MarketPlace password">
-//       <EmailHeader />
+export const PasswordReset = ({
+  fullname = "John Doe",
+  resetUrl,
+}: PasswordResetProps) => {
+  return (
+    <EmailLayout head="Reset your Drop password">
+      <Section className="px-8 py-8">
+        <Text className="text-gray-700 text-base leading-6 mb-6">
+          Hi {fullname},
+        </Text>
 
-//       <div className="px-8 py-8">
-//         <h1 className="text-2xl font-bold text-gray-900 mb-4">Reset Your Password</h1>
+        <Text className="text-gray-700 text-base leading-6 mb-6">
+          We received a request to reset your password for your Drop Marketplace
+          account. Click the button below to create a new password.
+        </Text>
 
-//         <p className="text-gray-700 text-base leading-6 mb-6">Hi {userName},</p>
+        <Section className="text-center mb-8">
+          <EmailButton href={resetUrl}>Reset Password</EmailButton>
+        </Section>
 
-//         <p className="text-gray-700 text-base leading-6 mb-6">
-//           We received a request to reset your password for your MarketPlace account. Click the button below to create a
-//           new password.
-//         </p>
+        <Hr className="border-gray-200 my-6" />
 
-//         <div className="text-center mb-8">
-//           <EmailButton href={resetUrl}>Reset Password</EmailButton>
-//         </div>
+        <Text className="text-gray-500 text-sm leading-5">
+          This password reset link will expire in 30 minutes. If you didn't
+          request a password reset, please ignore this email or contact our
+          support team if you have concerns.
+        </Text>
+      </Section>
+    </EmailLayout>
+  );
+};
 
-//         <hr className="border-gray-200 my-6" />
+export default PasswordReset;
 
-//         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
-//           <p className="text-yellow-800 text-sm font-semibold mb-2">Security Information</p>
-//           <p className="text-yellow-700 text-sm">
-//             Request made from: {ipAddress} ({userAgent})
-//           </p>
-//         </div>
-
-//         <p className="text-gray-500 text-sm leading-5">
-//           This password reset link will expire in 1 hour. If you didn't request a password reset, please ignore this
-//           email or contact our support team if you have concerns.
-//         </p>
-//       </div>
-//     </EmailLayout>
-//   )
-// }
-
-// export default PasswordReset
+export const renderPasswordReset = (
+  fullname: string,
+  resetPasswordUrl: string
+) => render(<PasswordReset fullname={fullname} resetUrl={resetPasswordUrl} />);

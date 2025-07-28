@@ -26,7 +26,7 @@ router.post(
 );
 
 router.post(
-  "/forgot-password",
+  "/forget-password",
   validate(emailSchema),
   asyncHandler(AuthController.forgetPassword)
 );
