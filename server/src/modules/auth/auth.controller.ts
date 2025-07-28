@@ -45,8 +45,8 @@ class AuthController {
     const { msg } = await AuthService.verification(email);
 
     res
-      .status(httpStatus.created)
-      .json(new ApiResponse(httpStatus.created, null, msg));
+      .status(httpStatus.ok)
+      .json(new ApiResponse(httpStatus.ok, null, msg));
   }
 
   static async forgetPassword(req: Request, res: Response) {
@@ -55,8 +55,18 @@ class AuthController {
     const { msg } = await AuthService.forgetPassword(email);
 
     res
-      .status(httpStatus.created)
-      .json(new ApiResponse(httpStatus.created, null, msg));
+      .status(httpStatus.ok)
+      .json(new ApiResponse(httpStatus.ok, null, msg));
+  }
+
+  static async resetPassword(req: Request, res: Response) {
+    const { token, password } = req.body;
+
+    const { msg } = await AuthService.resetPassword(token, password, req);
+
+    res
+      .status(httpStatus.ok)
+      .json(new ApiResponse(httpStatus.ok, null, msg));
   }
 }
 

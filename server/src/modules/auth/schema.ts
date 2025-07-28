@@ -10,7 +10,7 @@ export const registerSchema = z.object({
     .email("Invalid email address"),
   password: z
     .string({ required_error: "password is required" })
-    .min(6, "Password must be at least 6 characters"),
+    .min(8, "Password must be at least 8 characters"),
 });
 
 export const loginSchema = z.object({
@@ -19,7 +19,7 @@ export const loginSchema = z.object({
     .email("Invalid email address"),
   password: z
     .string({ required_error: "password is required" })
-    .min(6, "Password must be at least 6 characters"),
+    .min(8, "Password must be at least 8 characters"),
 });
 
 export const tokenSchema = z
@@ -31,6 +31,16 @@ export const emailSchema = z.object({
   email: z
     .string({ required_error: "email is required" })
     .email("Invalid email address"),
+});
+
+export const resetPasswordSchema = z.object({
+  token: z
+    .string({ required_error: "token is required" })
+    .min(12, "Invalid token length")
+    .max(12, "Invalid token length"),
+  password: z
+    .string({ required_error: "password is required" })
+    .min(8, "Password must be at least 8 characters"),
 });
 
 export type RegisterInput = z.infer<typeof registerSchema>;

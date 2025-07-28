@@ -12,6 +12,7 @@ import {
   hashForgetPasswordToken,
   hashPassword,
   verifyAccountVerificationToken,
+  verifyForgetPasswordToken,
 } from "../../shared/utils/services.js";
 import { tokenSchema } from "./schema.js";
 import { EmailVerification } from "@prisma/client";
@@ -209,9 +210,8 @@ class AuthService {
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user) throw new ApiError(httpStatus.notFound, "Invalid credentials.");
 
-    const token = nanoid(6);
+    const token = nanoid(12);
     const hashedToken = await hashForgetPasswordToken(token);
-    console.log(token, hashedToken);
 
     await prisma.$transaction(async (tx) => {
       await tx.passwordReset.create({
@@ -239,6 +239,45 @@ class AuthService {
     });
 
     return { msg: "Check your email for more info." };
+  }
+
+  static async resetPassword(token: string, password: string, req: Request) {
+    const resetToken = await prisma.passwordReset.findUnique({
+      where: {
+        expiresAt: {
+          gt: new Date(), // not expired
+        },
+        userId: req.session.userId as string,
+      },
+    });
+    if (!resetToken) {
+      throw new ApiError(
+        httpStatus.internalServerError,
+        "Token is invalid or has expired."
+      );
+    }
+
+    const isMatch = await verifyForgetPasswordToken(token, resetToken.token);
+    if (!isMatch) {
+      throw new ApiError(
+        httpStatus.internalServerError,
+        "Wrong token provided."
+      );
+    }
+
+    const hashedPassword = await hashPassword(password);
+    await prisma.$transaction(async (tx) => {
+      await tx.user.update({
+        where: { id: req.session.userId as string },
+        data: { password: hashedPassword },
+      });
+
+      await tx.passwordReset.deleteMany({
+        where: { userId: req.session.userId },
+      });
+    });
+
+    return { msg: "password reset successful" };
   }
 }
 

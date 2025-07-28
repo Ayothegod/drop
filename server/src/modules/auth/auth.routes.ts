@@ -2,7 +2,7 @@ import { Router } from "express";
 import { asyncHandler } from "../../core/middlewares/asyncHandler.js";
 import { validate } from "../../core/middlewares/validateZod.js";
 import AuthController from "./auth.controller.js";
-import { emailSchema, loginSchema, registerSchema } from "./schema.js";
+import { emailSchema, loginSchema, registerSchema, resetPasswordSchema } from "./schema.js";
 
 const router = Router();
 
@@ -31,11 +31,11 @@ router.post(
   asyncHandler(AuthController.forgetPassword)
 );
 
-// router.post(
-//   "/reset-password",
-//   validate(emailSchema),
-//   asyncHandler(AuthController.verification)
-// );
+router.post(
+  "/reset-password",
+  validate(resetPasswordSchema),
+  asyncHandler(AuthController.resetPassword)
+);
 
 // NOTE: example
 // router.get(
