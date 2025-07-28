@@ -19,6 +19,8 @@ router.post(
 
 router.get("/verify", asyncHandler(AuthController.verify));
 
+router.get("/verification", asyncHandler(AuthController.verify))
+
 // NOTE: example
 // router.get(
 //   "/verify/success",

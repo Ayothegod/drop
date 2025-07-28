@@ -13,9 +13,10 @@ import {
 interface EmailLayoutProps {
   children: React.ReactNode;
   img?: string;
+  head: string
 }
 
-const EmailLayout = ({ children, img }: EmailLayoutProps) => (
+const EmailLayout = ({ children, img, head }: EmailLayoutProps) => (
   <Html>
     <Head />
     <Body>
@@ -34,7 +35,7 @@ const EmailLayout = ({ children, img }: EmailLayoutProps) => (
                   />
                 )}
                 <Heading as="h1" className="text-2xl font-semibold text-white">
-                  Droplane
+                  {head}
                 </Heading>
               </Section>
 

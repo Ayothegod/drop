@@ -1,10 +1,4 @@
-import {
-  Heading,
-  Hr,
-  render,
-  Section,
-  Text
-} from "@react-email/components";
+import { Heading, Hr, render, Section, Text } from "@react-email/components";
 import * as React from "react";
 import { EmailButton } from "../EmailButton.js";
 import EmailLayout from "../EmailLayout.js";
@@ -18,20 +12,19 @@ const VerifyAccount = ({
   fullName = "John Doe",
   verificationUrl,
 }: EmailVerificationProps) => (
-  <EmailLayout img="https://img.icons8.com/?size=100&id=xLIkjgcmFOsC&format=png&color=000000">
+  <EmailLayout
+    head="Verify Your Email Address"
+    img="https://img.icons8.com/?size=100&id=xLIkjgcmFOsC&format=png&color=000000"
+  >
     <Section className="px-8 py-8">
-      <Heading as="h1" className="text-2xl font-bold text-gray-900 mb-4">
-        Verify Your Email Address
-      </Heading>
-
-      <Text className="text-gray-700 text-base leading-6 mb-6">
+      <Text className="text-gray-700 text-base font-semibold leading-6 mb-6">
         Hi {fullName},
       </Text>
 
       <Text className="text-gray-700 text-base leading-6 mb-6">
-        Welcome to Droplane, your digital marketplace! To complete your
-        registration and start buying and selling, please verify your email
-        address by clicking the button below.
+        Welcome to Drop, your digital marketplace! To complete your registration
+        and start buying and selling, please verify your email address by
+        clicking the button below.
       </Text>
 
       <Section className="text-center mb-8">

@@ -14,7 +14,7 @@ import {
 } from "../../shared/utils/services.js";
 import { tokenSchema } from "./schema.js";
 import { EmailVerification } from "@prisma/client";
-import { error } from "console";
+import { renderWelcomeEmail } from "../../shared/emails/auth/WelcomeUser.js";
 
 class AuthService {
   static async register(email: string, password: string, fullname: string) {
@@ -84,36 +84,13 @@ class AuthService {
     // create session ccokie
     req.session.userId = user.id;
 
-    // After session is created and userId is set in req.session
-    const session = await prisma.session.create({
-      data: {
-        userId: user.id,
-        sid: req.session.id,
-        expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
-        data: JSON.stringify({
-          email: user.email,
-          emailVerified: user.emailVerified,
-          createdAt: user.createdAt,
-        }),
-      },
-    });
-    if (!session) {
-      req.session.destroy((err) => {
-        // console.log("Session destroy error:", err);
-      });
-      throw new ApiError(
-        httpStatus.internalServerError,
-        "Unable to create session, please try again."
-      );
-    }
+    const html = await renderWelcomeEmail(user.fullname);
 
-    let dropUrl = `${serverEnv.CLIENT_URL}`;
-    // const html = await renderVerifyAccount(fullname, verificationUrl);
     const info = await transporter.sendMail({
       from: `"Start creating, start earning 💼" <${serverEnv.SENDGRID_EMAIL_FROM}>`,
       to: `${email}`,
       subject: "Welcome to Drop 🚀",
-      html: "html",
+      html: html,
     });
     if (!info.messageId)
       throw new ApiError(
