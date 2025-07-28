@@ -8,10 +8,8 @@ import { prisma } from "./core/database/prisma.js";
 import { ApiResponse } from "./core/middlewares/ApiResponse.js";
 import { asyncHandler } from "./core/middlewares/asyncHandler.js";
 import { errorHandler } from "./core/middlewares/error.middleware.js";
-import authRoutes from "./modules/auth/auth.routes.js";
-import { renderWelcomeEmail } from "./shared/emails/auth/WelcomeUser.js";
-import { transporter } from "./core/config/nodemailer.js";
 import { sessionUserLinker } from "./core/middlewares/sessionLinker.middlware.js";
+import authRoutes from "./modules/auth/auth.routes.js";
 
 const app = express();
 
@@ -51,14 +49,9 @@ app.use(sessionUserLinker);
 app.get(
   "/api/v1/test",
   asyncHandler(async (req: Request, res: Response) => {
-    // const html = await renderWelcomeEmail("Hello");
 
-    // const info = await transporter.sendMail({
-    //   from: `"Start creating, start earning 💼" <${serverEnv.SENDGRID_EMAIL_FROM}>`,
-    //   to: `ayodasilva12@gmail.com`,
-    //   subject: "Welcome to Drop 🚀",
-    //   html: html,
-    // });
+    console.log(req.session);
+    
 
     return res
       .status(200)

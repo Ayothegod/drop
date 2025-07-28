@@ -279,6 +279,15 @@ class AuthService {
 
     return { msg: "password reset successful" };
   }
+
+  static async logout(req: Request) {
+    await prisma.session.delete({
+      where: { userId: req.session.userId, id: req.session.id },
+    });
+
+    req.session.destroy(() => {});
+    return { msg: "Log-out success" };
+  }
 }
 
 export default AuthService;

@@ -2,7 +2,12 @@ import { Router } from "express";
 import { asyncHandler } from "../../core/middlewares/asyncHandler.js";
 import { validate } from "../../core/middlewares/validateZod.js";
 import AuthController from "./auth.controller.js";
-import { emailSchema, loginSchema, registerSchema, resetPasswordSchema } from "./schema.js";
+import {
+  emailSchema,
+  loginSchema,
+  registerSchema,
+  resetPasswordSchema,
+} from "./schema.js";
 
 const router = Router();
 
@@ -37,19 +42,6 @@ router.post(
   asyncHandler(AuthController.resetPassword)
 );
 
-// NOTE: example
-// router.get(
-//   "/verify/success",
-//   asyncHandler((req: Request, res: Response) => {
-//     res.status(200).json(new ApiResponse(200, "Success - Email verified successfully"));
-//   })
-// );
-
-// app.post("/logout", (req, res) => {
-//   req.session.destroy(() => {
-//     res.send("Logged out");
-//   });
-// });
-// router.get("/me", AuthController.getProfile);
+router.delete("/logout", asyncHandler(AuthController.logout));
 
 export default router;
