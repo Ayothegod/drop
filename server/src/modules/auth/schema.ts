@@ -27,5 +27,11 @@ export const tokenSchema = z
   .min(24, "Invalid token length")
   .max(24, "Invalid token length");
 
+export const emailSchema = z.object({
+  email: z
+    .string({ required_error: "email is required" })
+    .email("Invalid email address"),
+});
+
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;

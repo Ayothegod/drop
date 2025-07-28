@@ -20,7 +20,7 @@ model User {
   // profile Profile?
   EmailVerification EmailVerification[]
 
-  @@unique([email])
+  @@unique([email, emailVerified])
   @@map("user")
 }
 

@@ -2,7 +2,7 @@ import { Router } from "express";
 import { asyncHandler } from "../../core/middlewares/asyncHandler.js";
 import { validate } from "../../core/middlewares/validateZod.js";
 import AuthController from "./auth.controller.js";
-import { loginSchema, registerSchema } from "./schema.js";
+import { emailSchema, loginSchema, registerSchema } from "./schema.js";
 
 const router = Router();
 
@@ -19,7 +19,11 @@ router.post(
 
 router.get("/verify", asyncHandler(AuthController.verify));
 
-router.get("/verification", asyncHandler(AuthController.verify))
+router.post(
+  "/verification",
+  validate(emailSchema),
+  asyncHandler(AuthController.verification)
+);
 
 // NOTE: example
 // router.get(
