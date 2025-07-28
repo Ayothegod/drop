@@ -9,6 +9,7 @@ import { httpStatus } from "../../shared/utils/constants.js";
 import {
   comparePassword,
   hashAccountVerificationToken,
+  hashForgetPasswordToken,
   hashPassword,
   verifyAccountVerificationToken,
 } from "../../shared/utils/services.js";
@@ -199,6 +200,55 @@ class AuthService {
           "Verification email not sent, please try again."
         );
     });
+
+    return { msg: "verification email sent." };
+  }
+
+  static async forgetPassword(email: string) {
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user) throw new ApiError(httpStatus.notFound, "Invalid credentials.");
+
+    const token = nanoid(6);
+    const hashedToken = await hashForgetPasswordToken(token);
+
+    // const isVerified = await prisma.user.findUnique({
+    //   where: { email, emailVerified: true },
+    // });
+    // if (isVerified)
+    //   throw new ApiError(httpStatus.conflict, "This user is already verified.");
+
+    // const token = nanoid(24);
+    // const hashedToken = await hashAccountVerificationToken(token);
+
+    // await prisma.$transaction(async (tx) => {
+    //   const dbToken = await tx.emailVerification.create({
+    //     data: {
+    //       token: hashedToken,
+    //       expiresAt: new Date(Date.now() + 1000 * 60 * 30),
+    //       userId: user.id,
+    //     },
+    //   });
+    //   if (!dbToken)
+    //     throw new ApiError(
+    //       httpStatus.internalServerError,
+    //       "Unable to create verification token, please try again."
+    //     );
+
+    //   let verificationUrl = `${serverEnv.SERVER_URL}/auth/verify?token=${token}`;
+    //   const html = await renderVerifyAccount(user.fullname, verificationUrl);
+
+    //   const info = await transporter.sendMail({
+    //     from: `"Drop - Verification" <${serverEnv.SENDGRID_EMAIL_FROM}>`,
+    //     to: `${email}`,
+    //     subject: "Verify your Drop account",
+    //     html: html,
+    //   });
+    //   if (!info.messageId)
+    //     throw new ApiError(
+    //       httpStatus.internalServerError,
+    //       "Verification email not sent, please try again."
+    //     );
+    // });
 
     return { msg: "verification email sent." };
   }

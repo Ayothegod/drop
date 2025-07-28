@@ -25,6 +25,18 @@ router.post(
   asyncHandler(AuthController.verification)
 );
 
+router.post(
+  "/forgot-password",
+  validate(emailSchema),
+  asyncHandler(AuthController.forgetPassword)
+);
+
+// router.post(
+//   "/reset-password",
+//   validate(emailSchema),
+//   asyncHandler(AuthController.verification)
+// );
+
 // NOTE: example
 // router.get(
 //   "/verify/success",

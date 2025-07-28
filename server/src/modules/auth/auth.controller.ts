@@ -48,6 +48,16 @@ class AuthController {
       .status(httpStatus.created)
       .json(new ApiResponse(httpStatus.created, null, msg));
   }
+
+  static async forgetPassword(req: Request, res: Response) {
+    const { email } = req.body;
+
+    const { msg } = await AuthService.forgetPassword(email);
+
+    res
+      .status(httpStatus.created)
+      .json(new ApiResponse(httpStatus.created, null, msg));
+  }
 }
 
 export default AuthController;

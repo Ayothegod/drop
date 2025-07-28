@@ -19,6 +19,7 @@ model User {
   sessions          Session[]
   // profile Profile?
   EmailVerification EmailVerification[]
+  PasswordReset     PasswordReset?
 
   @@unique([email, emailVerified])
   @@map("user")
@@ -44,4 +45,13 @@ model EmailVerification {
   user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("email_verification_token")
+}
+
+model PasswordReset {
+  id        String   @id @default(cuid())
+  token     String // hashed token
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id])
 }

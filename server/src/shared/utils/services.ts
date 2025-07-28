@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import serverEnv from "../../core/config/env.js";
 import { ApiError } from "../../core/errors/ApiError.js";
 import { httpStatus } from "./constants.js";
+import { token } from "morgan";
 
 // export const generateAccountVerificationToken = (email: string) => {
 //   return jwt.sign({ email }, serverEnv.VERIFICATION_SECRET, {
@@ -18,44 +19,48 @@ import { httpStatus } from "./constants.js";
 //   }
 // };
 
-// hash verificationToken
-export const hashAccountVerificationToken = async (token: string) => {
+export const hashString = async (
+  input: string,
+  errorMsg = "Hashing failed"
+) => {
   try {
-    return await argon2.hash(token);
+    return await argon2.hash(input);
   } catch (err) {
-    throw new ApiError(httpStatus.internalServerError, "Token hash failed");
+    throw new ApiError(httpStatus.internalServerError, errorMsg);
   }
 };
 
-// Compare password using Argon2
-export const verifyAccountVerificationToken = async (
+export const compareString = async (
   token: string,
-  hashedToken: string
+  hashedToken: string,
+  errorMsg = "Comparison failed"
 ) => {
   try {
     return await argon2.verify(hashedToken, token);
   } catch (err) {
-    throw new ApiError(httpStatus.badRequest, "wrong token provided");
+    throw new ApiError(httpStatus.badRequest, errorMsg);
   }
 };
 
-// Hash password using Argon2
-export const hashPassword = async (password: string) => {
-  try {
-    return await argon2.hash(password);
-  } catch (err) {
-    throw new ApiError(400, "Password hashing failed");
-  }
-};
+// Password
+export const hashPassword = async (password: string) =>
+  hashString(password, "Password hashing failed");
 
-// Compare password using Argon2
-export const comparePassword = async (
-  password: string,
-  hashedPassword: string
-) => {
-  try {
-    return await argon2.verify(hashedPassword, password);
-  } catch (err) {
-    throw new ApiError(400, "Password comparison failed");
-  }
-};
+export const comparePassword = (password: string, hashedPassword: string) =>
+  compareString(password, hashedPassword, "Password comparison failed");
+
+// Account verification token
+export const hashAccountVerificationToken = async (token: string) =>
+  hashString(token, "Token hash failed");
+
+export const verifyAccountVerificationToken = (
+  token: string,
+  hashedToken: string
+) => compareString(token, hashedToken, "wrong token provided");
+
+// Forget password token
+export const hashForgetPasswordToken = (token: string) =>
+  hashString(token, "Token hash failed");
+
+export const verifyForgetPasswordToken = (token: string, hashedToken: string) =>
+  compareString(token, hashedToken, "wrong token provided");
