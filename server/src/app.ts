@@ -10,6 +10,7 @@ import { asyncHandler } from "./core/middlewares/asyncHandler.js";
 import { errorHandler } from "./core/middlewares/error.middleware.js";
 import { sessionUserLinker } from "./core/middlewares/sessionLinker.middlware.js";
 import authRoutes from "./modules/auth/auth.routes.js";
+import { limiter } from "./core/middlewares/rateLimit.js";
 
 const app = express();
 
@@ -44,6 +45,7 @@ app.use(cookieParser());
 app.use(express.json({ limit: "5mb" }));
 
 // { limit: "16kb" }
+app.use(limiter)
 app.use(sessionUserLinker);
 
 app.get(
