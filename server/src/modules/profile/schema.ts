@@ -24,4 +24,11 @@ export const updateProfileSchema = z.object({
   userCategoryPreference: z.array(z.string()).optional(),
 });
 
-export type ProfileInput = z.infer<typeof profileSchema>;
+export const changePasswordSchema = z.object({
+  currentPassword: z
+    .string({ required_error: "current password is required" })
+    .min(8, "Password must be at least 8 characters"),
+  newPassword: z
+    .string({ required_error: "new password is required" })
+    .min(8, "Password must be at least 8 characters"),
+});

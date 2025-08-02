@@ -10,6 +10,7 @@ import { asyncHandler } from "./core/middlewares/asyncHandler.js";
 import { errorHandler } from "./core/middlewares/error.middleware.js";
 import { sessionUserLinker } from "./core/middlewares/sessionLinker.middlware.js";
 import authRoutes from "./modules/auth/auth.routes.js";
+import profileRoutes from "./modules/profile/profile.routes.js";
 import { authLimiter, limiter } from "./core/middlewares/rateLimit.js";
 
 const app = express();
@@ -60,6 +61,7 @@ app.get(
 );
 
 app.use("/api/v1/auth", authLimiter, authRoutes);
+app.use("/api/v1/profile", profileRoutes);
 
 app.use(errorHandler as any);
 
