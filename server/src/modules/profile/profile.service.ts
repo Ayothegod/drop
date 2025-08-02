@@ -5,7 +5,6 @@ import { httpStatus } from "../../shared/utils/constants.js";
 import { comparePassword, hashPassword } from "../../shared/utils/services.js";
 
 class ProfileService {
-  // NOTE: update profile
   static async update(
     req: Request,
     fullname: string,
