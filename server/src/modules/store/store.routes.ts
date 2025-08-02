@@ -7,9 +7,24 @@ const router = Router();
 
 router.post(
   "/",
-  verifyToken,
+  // validate(updateProfileSchema),
+  asyncHandler(StoreController.create)
+);
+
+router.put(
+  "/",
+  // validate(updateProfileSchema),
+  asyncHandler(StoreController.create)
+);
+
+router.delete(
+  "/",
   // validate(updateProfileSchema),
   asyncHandler(StoreController.create)
 );
 
 export default router;
+
+
+// products, orders, track sales and earnings(analytics), payments
+// user - profile, orders - View/download, cart + watchlist
