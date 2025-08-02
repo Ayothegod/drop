@@ -1,7 +1,7 @@
 export const httpStatus = {
-  ok: 200, // Successful request
-  created: 201, // Resource created
-  noContent: 204, // Success, but no response body (e.g. logout)
+  ok: 200, 
+  created: 201, 
+  noContent: 204,
 
   badRequest: 400, // Invalid data from client
   unauthorized: 401, // Not logged in

@@ -6,17 +6,13 @@ import { httpStatus } from "../../shared/utils/constants.js";
 
 class ProfileController {
   static async update(req: Request, res: Response) {
-    const { username, bio, experience, userCategoryPreference } = req.body;
+    const { fullname, email, avatar } = req.body;
 
-    const { profile, msg } = await ProfileService.update(
-      username,
-      userCategoryPreference,
-      req,
-      bio,
-      experience
-    );
+    const { msg } = await ProfileService.update(req, fullname, email, avatar);
 
-    res.status(200).json(new ApiResponse(200, { profile }, msg));
+    res
+      .status(httpStatus.ok)
+      .json(new ApiResponse(httpStatus.ok, "profile", msg));
   }
 
   static async changePassword(req: Request, res: Response) {

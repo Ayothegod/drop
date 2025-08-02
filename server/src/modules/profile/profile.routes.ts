@@ -11,14 +11,12 @@ import { verifyToken } from "../../core/middlewares/auth.middleware.js";
 
 const router = Router();
 
-// router.post('/', verifyToken, validate(profileSchema), asyncHandler(ProfileController.create))
-
 // get profile
-router.get(
-  "/:email",
-  validate(updateProfileSchema),
-  asyncHandler(ProfileController.update)
-);
+// router.get(
+//   "/:email",
+//   validate(updateProfileSchema),
+//   asyncHandler(ProfileController.update)
+// );
 
 router.put(
   "/",
