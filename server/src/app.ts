@@ -40,20 +40,18 @@ app.use(
   })
 );
 
-// TODO: job.start()
+// job.start()
 app.use(cookieParser());
 app.use(express.json({ limit: "5mb" }));
 
 // { limit: "16kb" }
-app.use(limiter)
+app.use(limiter);
 app.use(sessionUserLinker);
 
 app.get(
   "/api/v1/test",
   asyncHandler(async (req: Request, res: Response) => {
-
     console.log(req.session);
-    
 
     return res
       .status(200)

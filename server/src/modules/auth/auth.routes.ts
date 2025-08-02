@@ -44,4 +44,7 @@ router.post(
 
 router.delete("/logout", asyncHandler(AuthController.logout));
 
+router.delete("/delete/:email", asyncHandler(AuthController.delete));
+
+
 export default router;

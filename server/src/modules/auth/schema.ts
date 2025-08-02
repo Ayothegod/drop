@@ -33,6 +33,10 @@ export const emailSchema = z.object({
     .email("Invalid email address"),
 });
 
+export const emailString = z
+  .string({ required_error: "email is required" })
+  .email("Invalid email address");
+
 export const resetPasswordSchema = z.object({
   token: z
     .string({ required_error: "token is required" })

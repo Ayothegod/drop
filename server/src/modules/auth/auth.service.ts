@@ -14,7 +14,7 @@ import {
   verifyAccountVerificationToken,
   verifyForgetPasswordToken,
 } from "../../shared/utils/services.js";
-import { tokenSchema } from "./schema.js";
+import { emailSchema, emailString, tokenSchema } from "./schema.js";
 import { EmailVerification } from "@prisma/client";
 import { renderWelcomeEmail } from "../../shared/emails/auth/WelcomeUser.js";
 import { renderPasswordReset } from "../../shared/emails/auth/PasswordReset.js";
@@ -87,19 +87,19 @@ class AuthService {
     // create session ccokie
     req.session.userId = user.id;
 
-    // const html = await renderWelcomeEmail(user.fullname);
+    const html = await renderWelcomeEmail(user.fullname);
 
-    // const info = await transporter.sendMail({
-    //   from: `"Start creating, start earning 💼" <${serverEnv.SENDGRID_EMAIL_FROM}>`,
-    //   to: `${email}`,
-    //   subject: "Welcome to Drop 🚀",
-    //   html: html,
-    // });
-    // if (!info.messageId)
-    //   throw new ApiError(
-    //     httpStatus.internalServerError,
-    //     "welcome email not sent."
-    //   );
+    const info = await transporter.sendMail({
+      from: `"Start creating, start earning 💼" <${serverEnv.SENDGRID_EMAIL_FROM}>`,
+      to: `${email}`,
+      subject: "Welcome to Drop 🚀",
+      html: html,
+    });
+    if (!info.messageId)
+      throw new ApiError(
+        httpStatus.internalServerError,
+        "welcome email not sent."
+      );
 
     return { user, msg: "User logged-in successfully" };
   }
@@ -287,6 +287,29 @@ class AuthService {
 
     req.session.destroy(() => {});
     return { msg: "Log-out success" };
+  }
+
+  static async delete(email: string) {
+    const _parsedToken = emailString.safeParse(email);
+    if (!_parsedToken.success) {
+      const message = _parsedToken.error.errors[0].message;
+      throw new ApiError(httpStatus.badRequest, message);
+    }
+    const rawEmail = _parsedToken.data;
+    console.log(rawEmail);
+
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user) throw new ApiError(httpStatus.notFound, "Invalid credentials.");
+
+    const deletetedUser = await prisma.user.delete({
+      where: { email: user.email },
+    });
+    if (!deletetedUser)
+      throw new ApiError(httpStatus.notFound, "This user does not exist.");
+
+    // TODO: send goodbye email after email job
+
+    return { msg: "User account completely deleted" };
   }
 }
 

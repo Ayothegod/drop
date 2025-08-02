@@ -68,6 +68,14 @@ class AuthController {
 
     res.status(httpStatus.ok).json(new ApiResponse(httpStatus.ok, null, msg));
   }
+
+  static async delete(req: Request, res: Response) {
+    const { email } = req.params;
+
+    const { msg } = await AuthService.delete(email as string);
+
+    res.status(httpStatus.ok).json(new ApiResponse(httpStatus.ok, null, msg));
+  }
 }
 
 export default AuthController;
