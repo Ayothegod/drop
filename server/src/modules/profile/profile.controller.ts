@@ -12,7 +12,7 @@ class ProfileController {
 
     res
       .status(httpStatus.ok)
-      .json(new ApiResponse(httpStatus.ok, "profile", msg));
+      .json(new ApiResponse(httpStatus.ok, null, msg));
   }
 
   static async changePassword(req: Request, res: Response) {
