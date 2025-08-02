@@ -20,14 +20,12 @@ const router = Router();
 
 router.put(
   "/",
-  verifyToken,
   validate(updateProfileSchema),
   asyncHandler(ProfileController.update)
 );
 
 router.patch(
   "/change-password",
-  verifyToken,
   validate(changePasswordSchema),
   asyncHandler(ProfileController.changePassword)
 );

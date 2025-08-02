@@ -64,7 +64,7 @@ app.get(
 );
 
 app.use("/api/v1/auth", authLimiter, authRoutes);
-app.use("/api/v1/profile", profileRoutes);
+app.use("/api/v1/profile", verifyToken, profileRoutes);
 app.use("/api/v1/store", verifyToken, storeRoutes);
 
 app.use(errorHandler as any);
