@@ -301,11 +301,13 @@ class AuthService {
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user) throw new ApiError(httpStatus.notFound, "Invalid credentials.");
 
-    const deletetedUser = await prisma.user.delete({
-      where: { email: user.email },
-    });
-    if (!deletetedUser)
+    try {
+      await prisma.user.delete({
+        where: { email: user.email },
+      });
+    } catch (error) {
       throw new ApiError(httpStatus.notFound, "This user does not exist.");
+    }
 
     // TODO: send goodbye email after email job
 

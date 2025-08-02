@@ -90,7 +90,7 @@ model Product {
 
 model Tag {
   id        Int     @id @default(autoincrement())
-  content   String
+  tag       String
   productId String
   product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
