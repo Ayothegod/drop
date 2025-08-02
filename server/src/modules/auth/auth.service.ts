@@ -87,19 +87,19 @@ class AuthService {
     // create session ccokie
     req.session.userId = user.id;
 
-    const html = await renderWelcomeEmail(user.fullname);
+    // const html = await renderWelcomeEmail(user.fullname);
 
-    const info = await transporter.sendMail({
-      from: `"Start creating, start earning 💼" <${serverEnv.SENDGRID_EMAIL_FROM}>`,
-      to: `${email}`,
-      subject: "Welcome to Drop 🚀",
-      html: html,
-    });
-    if (!info.messageId)
-      throw new ApiError(
-        httpStatus.internalServerError,
-        "welcome email not sent."
-      );
+    // const info = await transporter.sendMail({
+    //   from: `"Start creating, start earning 💼" <${serverEnv.SENDGRID_EMAIL_FROM}>`,
+    //   to: `${email}`,
+    //   subject: "Welcome to Drop 🚀",
+    //   html: html,
+    // });
+    // if (!info.messageId)
+    //   throw new ApiError(
+    //     httpStatus.internalServerError,
+    //     "welcome email not sent."
+    //   );
 
     return { user, msg: "User logged-in successfully" };
   }
