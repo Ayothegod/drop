@@ -12,11 +12,15 @@ import { sessionUserLinker } from "./core/middlewares/sessionLinker.middlware.js
 import authRoutes from "./modules/auth/auth.routes.js";
 import profileRoutes from "./modules/profile/profile.routes.js";
 import storeRoutes from "./modules/store/store.routes.js";
+import productRoutes from "./modules/product/product.routes.js";
+import { Server } from "@tus/server";
+import { FileStore } from "@tus/file-store";
 
 import { authLimiter, limiter } from "./core/middlewares/rateLimit.js";
 import { verifyToken } from "./core/middlewares/auth.middleware.js";
 
 const app = express();
+const uploadApp = express();
 
 app.use(
   cors({
@@ -52,6 +56,13 @@ app.use(express.json({ limit: "5mb" }));
 app.use(limiter);
 app.use(sessionUserLinker);
 
+const server = new Server({
+  path: "/uploads",
+  datastore: new FileStore({ directory: "/files" }),
+});
+uploadApp.all("*", server.handle.bind(server));
+app.use("/api/v1/uploads", uploadApp);
+
 app.get(
   "/api/v1/test",
   asyncHandler(async (req: Request, res: Response) => {
@@ -66,6 +77,7 @@ app.get(
 app.use("/api/v1/auth", authLimiter, authRoutes);
 app.use("/api/v1/profile", verifyToken, profileRoutes);
 app.use("/api/v1/store", verifyToken, storeRoutes);
+app.use("/api/v1/product", verifyToken, productRoutes);
 
 app.use(errorHandler as any);
 
