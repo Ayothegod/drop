@@ -58,10 +58,12 @@ app.use(sessionUserLinker);
 
 const server = new Server({
   path: "/uploads",
-  datastore: new FileStore({ directory: "/files" }),
+  datastore: new FileStore({ directory: "./shared/files" }),
 });
 uploadApp.all("*", server.handle.bind(server));
-app.use("/api/v1/uploads", uploadApp);
+app.use("/api/v1/uploads", uploadApp, () => {
+  console.log("Tus server is running");
+});
 
 app.get(
   "/api/v1/test",
