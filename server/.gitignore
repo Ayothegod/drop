@@ -12,3 +12,5 @@ prisma/migrations
 logs
 
 dist
+
+src/uploads

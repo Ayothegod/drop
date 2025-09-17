@@ -17,6 +17,16 @@ const envSchema = z.object({
   DATABASE_URL: z.string().url(),
   CLIENT_URL: z.string().url().min(1, "Client app url is required"),
   SERVER_URL: z.string().url().min(1, "server url is required"),
+
+  CLOUDFLARE_ACCESS_KEY: z.string({
+    required_error: "Cloudflare access key is required",
+  }),
+  CLOUDFLARE_SECRET_KEY: z.string({
+    required_error: "Cloudflare secret key is required",
+  }),
+  CLOUDFLARE_ENDPOINT: z
+    .string({ required_error: "Cloudflare endpoint is required" })
+    .url(),
 });
 
 const _parsed = envSchema.safeParse(process.env);
@@ -31,4 +41,3 @@ if (!_parsed.success) {
 
 const serverEnv = _parsed.data;
 export default serverEnv;
-

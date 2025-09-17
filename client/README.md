@@ -1,3 +1,1 @@
-
-
 # Client for Droplane app
